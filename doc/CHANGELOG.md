@@ -193,3 +193,14 @@
   - `app/dashboard/student/page.tsx` now re-exports from grouped source page.
 - Executed deliverable verification script for transcript/dashboard files.
 - Executed `npm run lint`, `npm run typecheck`, and `npm test`: passed.
+- Added faculty dashboard source page `app/(dashboard)/faculty/page.tsx` with:
+  - Assigned sections widget (course/term/section, enrolled student counts, gradebook completion status, quick gradebook links)
+  - Pending grading queue widget (incomplete sections prioritized by completion %)
+  - Action area with dashboard navigation guidance
+- Added reusable faculty dashboard components:
+  - `components/dashboard/FacultySections.tsx`
+  - `components/dashboard/GradingQueue.tsx`
+- Updated route file `app/dashboard/faculty/page.tsx` to re-export grouped source page implementation.
+- Gradebook completion status is now computed per section as scored-cells coverage against expected cells (`students × gradebook_items`).
+- Executed deliverable verification script for faculty dashboard files.
+- Executed `npm run lint` and `npm run typecheck`: passed.

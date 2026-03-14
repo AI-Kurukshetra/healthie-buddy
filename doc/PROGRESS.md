@@ -113,3 +113,11 @@ Format: `[YYYY-MM-DD HH:MM] <agent> — <what was done>`
     + app/dashboard/student/page.tsx
   Checks passed: deliverables verified ✓  npm run lint ✓  npm run typecheck ✓  npm test ✓
   Next handoff to: $agent-browser — validate student transcript and dashboard flows in browser
+- [2026-03-14 14:35] $frontend-design — Built faculty dashboard widgets for assigned sections, grading queue, and gradebook quick-link actions.
+  Output files:
+    + app/(dashboard)/faculty/page.tsx
+    + app/dashboard/faculty/page.tsx
+    + components/dashboard/FacultySections.tsx
+    + components/dashboard/GradingQueue.tsx
+  Checks passed: deliverables verified ✓  npm run lint ✓  npm run typecheck ✓
+  Next handoff to: $agent-browser — validate faculty dashboard rendering and gradebook navigation flow

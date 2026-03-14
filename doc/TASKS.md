@@ -43,7 +43,7 @@ Legend: `[ ]` todo, `[~]` in-progress, `[x]` done, `[!]` blocked
 - [x] (2026-03-14 14:08 IST) Faculty gradebook entry and submission workflow.
 - [x] (2026-03-14 14:25 IST) Student transcript view with GPA calculation.
 - [x] (2026-03-14 14:25 IST) Build lightweight student dashboard (enrolled courses + GPA snapshot).
-- [ ] Build lightweight faculty dashboard (assigned sections + grading queue).
+- [x] (2026-03-14 14:35 IST) Build lightweight faculty dashboard (assigned sections + grading queue).
 - [ ] Implement endpoint groups for `/grades`, `/transcripts`, plus role-scoped `/students` and `/faculty`.
 - [ ] Add unit tests for grade submission and GPA calculation.
 - [ ] Add E2E tests for the 5 core journeys (register/login, browse, enroll conflict, grade submit, transcript/GPA).
