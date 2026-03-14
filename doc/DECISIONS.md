@@ -80,3 +80,7 @@ Format:
 - [2026-03-14] Decision: Compute transcript final grades primarily from gradebook score aggregates, with `grades` table fallback.
   Rationale: Transcript/GPA should reflect detailed assessment outcomes when available, while still supporting sections where only final grade rows exist.
   Impact: New shared transcript service derives weighted percentage and grade points from gradebook items/scores, then falls back to `grades.letter_grade/grade_points` per enrollment when needed.
+
+- [2026-03-14] Decision: Define faculty gradebook completion status by score-cell coverage (`gradebook_scores` rows over `students × gradebook_items`).
+  Rationale: This gives an objective, section-level grading progress indicator without requiring additional schema fields.
+  Impact: Faculty dashboard widgets now show completion percentage and pending grading queue priority derived from existing roster/item/score tables.
