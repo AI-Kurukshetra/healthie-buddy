@@ -2,6 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import { requireStudentContext } from "@/lib/api/auth";
 import { errorResponse, successResponse } from "@/lib/api/http";
 import { getStudentTranscriptAggregate } from "@/lib/api/transcripts";
+import { TranscriptMeResponseSchema } from "@/lib/validations/dashboard-api";
 
 export async function GET() {
   const supabase = await createClient();
@@ -21,5 +22,10 @@ export async function GET() {
     return errorResponse(500, "transcript_lookup_failed", error ?? "Could not load transcript data.");
   }
 
-  return successResponse(200, data);
+  const parsed = TranscriptMeResponseSchema.safeParse(data);
+  if (!parsed.success) {
+    return errorResponse(500, "invalid_response", "Transcript response validation failed.");
+  }
+
+  return successResponse(200, parsed.data);
 }

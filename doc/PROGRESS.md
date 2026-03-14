@@ -121,3 +121,13 @@ Format: `[YYYY-MM-DD HH:MM] <agent> — <what was done>`
     + components/dashboard/GradingQueue.tsx
   Checks passed: deliverables verified ✓  npm run lint ✓  npm run typecheck ✓
   Next handoff to: $agent-browser — validate faculty dashboard rendering and gradebook navigation flow
+- [2026-03-14 14:50] $api-endpoint — Implemented role-scoped endpoint group for students/faculty profile summaries and normalized grades/transcript APIs with Zod response validation.
+  Output files:
+    + app/api/students/me/route.ts
+    + app/api/faculty/me/route.ts
+    + app/api/grades/route.ts
+    + app/api/transcripts/me/route.ts
+    + lib/api/grades.ts
+    + lib/validations/dashboard-api.ts
+  Checks passed: deliverables verified ✓  npm run lint ✓  npm run typecheck ✓  npm test ✓
+  Next handoff to: $agent-browser — validate role-based API behavior for student and faculty dashboards

@@ -84,3 +84,7 @@ Format:
 - [2026-03-14] Decision: Define faculty gradebook completion status by score-cell coverage (`gradebook_scores` rows over `students × gradebook_items`).
   Rationale: This gives an objective, section-level grading progress indicator without requiring additional schema fields.
   Impact: Faculty dashboard widgets now show completion percentage and pending grading queue priority derived from existing roster/item/score tables.
+
+- [2026-03-14] Decision: Enforce API response contracts with Zod at route boundaries for dashboard-critical endpoints.
+  Rationale: Dashboard UIs depend on stable normalized shapes; validating responses server-side catches mapping regressions early.
+  Impact: `/api/students/me`, `/api/faculty/me`, `/api/grades`, and `/api/transcripts/me` now parse payloads against shared schemas in `lib/validations/dashboard-api.ts` before returning success responses.
