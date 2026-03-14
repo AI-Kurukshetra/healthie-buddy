@@ -25,21 +25,46 @@ export async function middleware(request: NextRequest) {
   const { response, supabase, user } = await updateSession(request);
 
   async function getRoleCode(userId: string): Promise<string | null> {
-    const { data: userRow } = await supabase
+    const { data: userRow, error: userError } = await supabase
       .from("users")
       .select("role_id")
       .eq("id", userId)
       .maybeSingle<{ role_id: string }>();
 
+    if (userError) {
+      console.error("middleware:getRoleCode users lookup failed", {
+        code: userError.code,
+        message: userError.message,
+        details: userError.details,
+        hint: userError.hint,
+        userId,
+        pathname,
+      });
+      return null;
+    }
+
     if (!userRow?.role_id) {
       return null;
     }
 
-    const { data: roleRow } = await supabase
+    const { data: roleRow, error: roleError } = await supabase
       .from("roles")
       .select("code")
       .eq("id", userRow.role_id)
       .maybeSingle<{ code: string }>();
+
+    if (roleError) {
+      console.error("middleware:getRoleCode roles lookup failed", {
+        code: roleError.code,
+        message: roleError.message,
+        details: roleError.details,
+        hint: roleError.hint,
+        userId,
+        roleId: userRow.role_id,
+        pathname,
+      });
+      return null;
+    }
 
     return roleRow?.code ?? null;
   }

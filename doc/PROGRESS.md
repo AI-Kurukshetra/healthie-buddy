@@ -246,6 +246,20 @@ Format: `[YYYY-MM-DD HH:MM] <agent> — <what was done>`
     + doc/DECISIONS.md
   Checks passed: documentation updated ✓
   Next handoff to: coordinator — ready for demo recording or final deployment work
+- [2026-03-14 18:34] $frontend-design — Added live student enrollment controls to the course catalog and redirected invalid faculty gradebook section URLs to the signed-in faculty’s first owned section.
+  Output files:
+    + app/(dashboard)/courses/page.tsx
+    + app/(dashboard)/faculty/sections/[sectionId]/gradebook/page.tsx
+    + components/courses/CourseCatalog.tsx
+    + components/courses/SectionCard.tsx
+    + components/courses/EnrollmentButton.tsx
+    + components/courses/types.ts
+    + doc/DEMO.md
+    + doc/TASKS.md
+    + doc/CHANGELOG.md
+    + doc/DECISIONS.md
+  Checks passed: npm run lint ✓  npm run typecheck ✓
+  Next handoff to: coordinator — ready for browser verification of student enroll and faculty gradebook flows
 - [2026-03-14 17:24] codex — Published evaluation-ready README, architecture/API docs, hardened API response contracts, and added auth-action unit coverage.
   Output files:
     + README.md
@@ -299,3 +313,7 @@ Format: `[YYYY-MM-DD HH:MM] <agent> — <what was done>`
     + components/ui/toast.tsx
   Checks passed: npm run lint ✓  npm run typecheck ✓  npm test ✓
   Next handoff to: $agent-browser — verify login/register pending states, dashboard route loaders, top progress bar, and gradebook save/create feedback in the browser
+- [2026-03-14 18:41] codex — Replaced the technical enrollment helper copy on student section cards with friendlier guidance and updated tracking docs.
+- [2026-03-14 18:44] codex — Fixed enrollment prerequisite fallback handling for Supabase schema-cache miss errors, added a regression test, and re-ran lint/typecheck/tests.
+- [2026-03-14 18:47] codex — Added Supabase RLS policies so faculty can read student and user profile rows for rosters in sections they teach, and documented the schema change.
+- [2026-03-14 19:15] codex — Replaced the recursive faculty roster RLS policy implementation with security-definer helper checks, added auth lookup logging, and updated schema docs.

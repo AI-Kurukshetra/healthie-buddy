@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import { requireUser } from "@/lib/auth/server";
 import { homePathForRole } from "@/lib/auth/routes";
 import { createClient } from "@/lib/supabase/server";
-import { CourseCatalog, type CourseCatalogItem } from "@/components/courses/CourseCatalog";
+import { CourseCatalog } from "@/components/courses/CourseCatalog";
+import type { CourseCatalogItem, SectionEnrollmentStatus } from "@/components/courses/types";
 
 type CourseRow = {
   id: string;
@@ -34,6 +35,15 @@ type SectionRow = {
 
 type EnrollmentRow = {
   section_id: string;
+};
+
+type StudentProfileRow = {
+  id: string;
+};
+
+type StudentEnrollmentRow = {
+  section_id: string;
+  status: "enrolled" | "completed" | "dropped";
 };
 
 const DAY_LABELS: Record<number, string> = {
@@ -93,6 +103,29 @@ export default async function CoursesPage() {
   const sections = (sectionsData ?? []) as SectionRow[];
   const sectionIds = sections.map((section) => section.id);
   const enrolledCounts = new Map<string, number>();
+  const enrollmentStatusBySection = new Map<string, SectionEnrollmentStatus>();
+  let canEnroll = false;
+
+  if (user.role === "student") {
+    const { data: studentRow } = await supabase
+      .from("students")
+      .select("id")
+      .eq("user_id", user.id)
+      .maybeSingle<StudentProfileRow>();
+
+    if (studentRow?.id) {
+      canEnroll = true;
+
+      const { data: studentEnrollmentRows } = await supabase
+        .from("enrollments")
+        .select("section_id,status")
+        .eq("student_id", studentRow.id);
+
+      for (const enrollment of (studentEnrollmentRows ?? []) as StudentEnrollmentRow[]) {
+        enrollmentStatusBySection.set(enrollment.section_id, enrollment.status);
+      }
+    }
+  }
 
   if (sectionIds.length > 0) {
     const { data: enrollmentsData } = await supabase
@@ -131,6 +164,8 @@ export default async function CoursesPage() {
       capacity: section.capacity,
       enrolledCount,
       seatsRemaining,
+      enrollmentStatus: enrollmentStatusBySection.get(section.id) ?? null,
+      showEnrollmentAction: canEnroll,
     };
 
     const existingCourse = courseMap.get(course.id);
@@ -153,10 +188,12 @@ export default async function CoursesPage() {
 
   return (
     <CourseCatalog
+      canEnroll={canEnroll}
       courses={courses}
       homeHref={homePathForRole(user.role)}
       homeLabel={`${user.role[0]?.toUpperCase() ?? ""}${user.role.slice(1)} Dashboard`}
       userName={user.fullName}
+      viewerRole={user.role}
     />
   );
 }

@@ -1,18 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-
-export type SectionView = {
-  id: string;
-  term: string;
-  sectionCode: string;
-  dayLabel: string;
-  timeLabel: string;
-  room: string | null;
-  instructorName: string | null;
-  capacity: number;
-  enrolledCount: number;
-  seatsRemaining: number;
-};
+import { EnrollmentButton } from "@/components/courses/EnrollmentButton";
+import type { SectionView } from "@/components/courses/types";
 
 type SectionCardProps = {
   section: SectionView;
@@ -46,6 +35,19 @@ export function SectionCard({ section }: SectionCardProps) {
         <p>
           <span className="font-medium text-slate-950">Capacity:</span> {section.enrolledCount}/{section.capacity}
         </p>
+        {section.showEnrollmentAction ? (
+          <div className="space-y-2 border-t border-slate-200/80 pt-3">
+            <EnrollmentButton
+              enrollmentStatus={section.enrollmentStatus}
+              seatsRemaining={section.seatsRemaining}
+              sectionCode={section.sectionCode}
+              sectionId={section.id}
+            />
+            <p className="text-xs text-slate-500">
+              We will confirm availability and flag any schedule or eligibility issues before enrollment is finalized.
+            </p>
+          </div>
+        ) : null}
       </CardContent>
     </Card>
   );
