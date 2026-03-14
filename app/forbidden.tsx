@@ -7,7 +7,7 @@ export default function ForbiddenPage() {
       <p className="mt-2 text-sm text-gray-600">
         You do not have permission to access this resource.
       </p>
-      <Link href="/dashboard" className="mt-6 rounded-md border px-4 py-2 text-sm">
+      <Link href="/" className="mt-6 rounded-md border px-4 py-2 text-sm">
         Back to dashboard
       </Link>
     </main>

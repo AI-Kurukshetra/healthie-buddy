@@ -136,7 +136,7 @@ export function GradebookTable({ sectionOptions, currentSectionId }: GradebookTa
       return;
     }
 
-    router.push(`/dashboard/faculty/sections/${nextSectionId}/gradebook`);
+    router.push(`/faculty/sections/${nextSectionId}/gradebook`);
   }
 
   async function handleCreateItem() {

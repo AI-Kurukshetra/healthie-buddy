@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { type AppRole, isAppRole } from "@/lib/auth/types";
+import { homePathForRole } from "@/lib/auth/routes";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
 function getField(formData: FormData, key: string) {
@@ -126,7 +127,7 @@ export async function registerAction(formData: FormData) {
   }
 
   const hasSession = Boolean(authData.session);
-  redirect(hasSession ? "/dashboard" : "/login?registered=1");
+  redirect(hasSession ? homePathForRole(roleInput) : "/login?registered=1");
 }
 
 export async function loginAction(formData: FormData) {
@@ -144,10 +145,23 @@ export async function loginAction(formData: FormData) {
   });
 
   if (error) {
-    redirect("/login?error=invalid_credentials");
+    console.error("loginAction: signInWithPassword failed", {
+      code: error.code,
+      message: error.message,
+      status: error.status,
+      email,
+    });
+
+    const params = new URLSearchParams({
+      error: error.code === "invalid_credentials" ? "invalid_credentials" : "login_failed",
+      error_code: error.code ?? "unknown",
+      error_message: error.message ?? "Unknown login error.",
+    });
+
+    redirect(`/login?${params.toString()}`);
   }
 
-  redirect("/dashboard");
+  redirect("/");
 }
 
 export async function logoutAction() {

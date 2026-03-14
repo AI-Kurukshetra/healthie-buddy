@@ -105,7 +105,7 @@ export default async function FacultyGradebookPage({ params }: PageProps) {
 
       <Card>
         <CardContent className="flex flex-wrap items-center gap-3 p-4">
-          <Link href="/dashboard/faculty" className="rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-700">
+          <Link href="/faculty" className="rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-700">
             Back to Faculty Dashboard
           </Link>
           <p className="text-sm text-gray-600">Use the section selector below, then submit all score edits at once.</p>

@@ -15,10 +15,11 @@ import { Button } from "@/components/ui/button";
 const LOGIN_ERROR_MESSAGE: Record<string, string> = {
   invalid_input: "Please enter your email and password.",
   invalid_credentials: "Invalid email or password.",
+  login_failed: "Login failed. Please try again.",
 };
 
 type LoginPageProps = {
-  searchParams: Promise<{ error?: string; registered?: string }>;
+  searchParams: Promise<{ error?: string; error_code?: string; error_message?: string; registered?: string }>;
 };
 
 export default async function LoginPage({ searchParams }: LoginPageProps) {
@@ -26,6 +27,8 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
   const errorMessage = params.error
     ? LOGIN_ERROR_MESSAGE[params.error] ?? "Login failed. Please try again."
     : null;
+  const errorCode = params.error_code;
+  const errorDetail = params.error_message;
   const showRegisteredMessage = params.registered === "1";
 
   return (
@@ -44,9 +47,11 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
             </p>
           ) : null}
           {errorMessage ? (
-            <p className="mb-4 rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
-              {errorMessage}
-            </p>
+            <div className="mb-4 space-y-1 rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+              <p>{errorMessage}</p>
+              {errorCode ? <p className="text-xs">Code: {errorCode}</p> : null}
+              {errorDetail ? <p className="text-xs">Detail: {errorDetail}</p> : null}
+            </div>
           ) : null}
           <form action={loginAction} className="space-y-6">
             <div className="space-y-2">

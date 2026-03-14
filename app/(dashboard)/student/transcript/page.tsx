@@ -59,10 +59,10 @@ export default async function StudentTranscriptPage() {
       </header>
 
       <div className="flex flex-wrap gap-3">
-        <Link href="/dashboard/student" className="rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-700">
+        <Link href="/student" className="rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-700">
           Back to Student Dashboard
         </Link>
-        <Link href="/dashboard/courses" className="rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-700">
+        <Link href="/courses" className="rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-700">
           Browse Course Catalog
         </Link>
       </div>

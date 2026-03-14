@@ -27,6 +27,8 @@ Legend: `[ ]` todo, `[~]` in-progress, `[x]` done, `[!]` blocked
 - [x] (2026-03-14 10:41 IST) Implement RBAC guards for routes and server actions (`student`, `faculty`, `admin`).
 - [x] (2026-03-14 10:50 IST) Define minimal demo data seed strategy for students and faculty users.
 - [x] (2026-03-14 11:56 IST) Add and run Playwright smoke checks for auth pages and unauthenticated route guards.
+- [x] (2026-03-14 16:08 IST) Repair demo login for SQL-seeded auth users by backfilling `auth.identities` email-provider rows.
+- [x] (2026-03-14 16:24 IST) Normalize SQL-seeded demo `auth.users` rows so Supabase password login no longer fails on null auth fields.
 
 ### M2 – Enrollment system
 - [x] (2026-03-14 10:37 IST) Design schema for courses, sections, and enrollments (term stored on sections).
@@ -50,6 +52,7 @@ Legend: `[ ]` todo, `[~]` in-progress, `[x]` done, `[!]` blocked
 - [ ] Add E2E tests for the 5 core journeys (register/login, browse, enroll conflict, grade submit, transcript/GPA).
 
 ## 3. Cross-Milestone Quality & Release
+- [x] (2026-03-14 15:26 IST) Consolidate App Router dashboard routes under `app/(dashboard)` and remove duplicate `app/dashboard` tree.
 - [ ] Publish API contracts and validation schemas for all in-scope flows.
 - [ ] Run lint/typecheck/test gates and fix issues.
 - [ ] Prepare hackathon demo script and fallback paths.

@@ -1,14 +1,16 @@
 import { type NextRequest } from "next/server";
 import { updateSession } from "@/lib/supabase/middleware";
 import { NextResponse } from "next/server";
+import { isAppRole } from "@/lib/auth/types";
+import { homePathForRole, mapLegacyDashboardPath } from "@/lib/auth/routes";
 
 const AUTH_ROUTES = ["/login", "/register"];
-const PROTECTED_PREFIXES = ["/dashboard"];
+const PROTECTED_PREFIXES = ["/student", "/faculty", "/admin", "/courses"];
 
 const ROLE_ROUTE_PREFIX: Record<string, string[]> = {
-  student: ["/dashboard/student"],
-  faculty: ["/dashboard/faculty"],
-  admin: ["/dashboard/admin"],
+  student: ["/student"],
+  faculty: ["/faculty"],
+  admin: ["/admin"],
 };
 
 function redirectTo(request: NextRequest, pathname: string) {
@@ -22,6 +24,48 @@ export async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
   const { response, supabase, user } = await updateSession(request);
 
+  async function getRoleCode(userId: string): Promise<string | null> {
+    const { data: userRow } = await supabase
+      .from("users")
+      .select("role_id")
+      .eq("id", userId)
+      .maybeSingle<{ role_id: string }>();
+
+    if (!userRow?.role_id) {
+      return null;
+    }
+
+    const { data: roleRow } = await supabase
+      .from("roles")
+      .select("code")
+      .eq("id", userRow.role_id)
+      .maybeSingle<{ code: string }>();
+
+    return roleRow?.code ?? null;
+  }
+
+  if (pathname.startsWith("/dashboard")) {
+    if (!user) {
+      return redirectTo(request, "/login");
+    }
+
+    const roleCode = await getRoleCode(user.id);
+    if (!roleCode || !isAppRole(roleCode)) {
+      return redirectTo(request, "/forbidden");
+    }
+
+    if (pathname === "/dashboard") {
+      return redirectTo(request, homePathForRole(roleCode));
+    }
+
+    const mappedPath = mapLegacyDashboardPath(pathname);
+    if (mappedPath) {
+      return redirectTo(request, mappedPath);
+    }
+
+    return redirectTo(request, homePathForRole(roleCode));
+  }
+
   const isAuthRoute = AUTH_ROUTES.some((route) => pathname.startsWith(route));
   const isProtectedRoute = PROTECTED_PREFIXES.some((route) =>
     pathname.startsWith(route),
@@ -32,22 +76,9 @@ export async function middleware(request: NextRequest) {
   }
 
   if (user && isAuthRoute) {
-    const { data: userRow } = await supabase
-      .from("users")
-      .select("role_id")
-      .eq("id", user.id)
-      .maybeSingle<{ role_id: string }>();
-
-    if (userRow?.role_id) {
-      const { data: roleRow } = await supabase
-        .from("roles")
-        .select("code")
-        .eq("id", userRow.role_id)
-        .maybeSingle<{ code: string }>();
-
-      if (roleRow?.code) {
-        return redirectTo(request, "/dashboard");
-      }
+    const roleCode = await getRoleCode(user.id);
+    if (roleCode && isAppRole(roleCode)) {
+      return redirectTo(request, homePathForRole(roleCode));
     }
 
     return response;
@@ -58,23 +89,7 @@ export async function middleware(request: NextRequest) {
     .some((prefix) => pathname.startsWith(prefix));
 
   if (user && needsRoleGuard) {
-    const { data: userRow } = await supabase
-      .from("users")
-      .select("role_id")
-      .eq("id", user.id)
-      .maybeSingle<{ role_id: string }>();
-
-    if (!userRow?.role_id) {
-      return redirectTo(request, "/forbidden");
-    }
-
-    const { data: roleRow } = await supabase
-      .from("roles")
-      .select("code")
-      .eq("id", userRow.role_id)
-      .maybeSingle<{ code: string }>();
-
-    const roleCode = roleRow?.code;
+    const roleCode = await getRoleCode(user.id);
     if (!roleCode) {
       return redirectTo(request, "/forbidden");
     }
