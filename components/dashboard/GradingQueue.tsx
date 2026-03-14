@@ -1,5 +1,8 @@
 import Link from "next/link";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { buttonVariants } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
 import type { FacultySectionView } from "@/components/dashboard/FacultySections";
 
 type GradingQueueProps = {
@@ -14,34 +17,38 @@ export function GradingQueue({ sections }: GradingQueueProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-xl">Pending Grading Tasks</CardTitle>
+        <CardTitle className="text-2xl">Pending Grading</CardTitle>
         <CardDescription>Sections with incomplete gradebook scoring activity.</CardDescription>
       </CardHeader>
       <CardContent>
         {pendingSections.length === 0 ? (
-          <p className="text-sm text-gray-600">All section score entries are up to date.</p>
+          <p className="text-sm text-slate-500">All section score entries are up to date.</p>
         ) : (
-          <div className="space-y-3">
+          <div className="space-y-4">
             {pendingSections.map((section) => (
-              <div key={section.sectionId} className="rounded-md border border-gray-200 p-3">
+              <div key={section.sectionId} className="rounded-2xl border border-slate-200 bg-slate-50/80 p-4">
                 <div className="flex items-start justify-between gap-3">
                   <div>
-                    <p className="font-medium text-gray-900">
+                    <p className="font-medium text-slate-950">
                       {section.courseCode} {section.courseTitle}
                     </p>
-                    <p className="text-xs text-gray-600">
-                      {section.term} • {section.sectionCode}
-                    </p>
+                    <div className="mt-2 flex flex-wrap gap-2">
+                      <Badge variant="outline">{section.term}</Badge>
+                      <Badge variant="secondary">{section.sectionCode}</Badge>
+                    </div>
                   </div>
-                  <p className="text-sm font-semibold text-gray-900">{section.completionPercent.toFixed(0)}%</p>
+                  <Badge variant="warning">{section.completionPercent.toFixed(0)}%</Badge>
                 </div>
 
-                <p className="mt-2 text-xs text-gray-600">{section.completionLabel}</p>
+                <p className="mt-3 text-sm text-slate-500">{section.completionLabel}</p>
+                <div className="mt-3">
+                  <Progress value={section.completionPercent} />
+                </div>
 
                 <div className="mt-3">
                   <Link
+                    className={buttonVariants({ size: "sm", variant: "outline" })}
                     href={`/faculty/sections/${section.sectionId}/gradebook`}
-                    className="rounded-md border border-gray-300 px-3 py-2 text-xs text-gray-700 hover:bg-gray-50"
                   >
                     Continue Grading
                   </Link>

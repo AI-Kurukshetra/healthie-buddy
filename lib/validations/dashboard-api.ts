@@ -1,9 +1,10 @@
 import { z } from "zod";
+import { DbUuidSchema } from "@/lib/validations/identifiers";
 
 export const StudentMeResponseSchema = z.object({
   student: z.object({
-    id: z.string().uuid(),
-    userId: z.string().uuid(),
+    id: DbUuidSchema,
+    userId: DbUuidSchema,
     email: z.string().email(),
     fullName: z.string(),
     studentNumber: z.string(),
@@ -21,8 +22,8 @@ export const StudentMeResponseSchema = z.object({
 
 export const FacultyMeResponseSchema = z.object({
   faculty: z.object({
-    id: z.string().uuid(),
-    userId: z.string().uuid(),
+    id: DbUuidSchema,
+    userId: DbUuidSchema,
     email: z.string().email(),
     fullName: z.string(),
     employeeNumber: z.string(),
@@ -38,7 +39,7 @@ export const FacultyMeResponseSchema = z.object({
 });
 
 export const GradeBreakdownItemSchema = z.object({
-  itemId: z.string().uuid(),
+  itemId: DbUuidSchema,
   title: z.string(),
   maxPoints: z.number().nonnegative(),
   score: z.number().nonnegative().nullable(),
@@ -46,12 +47,12 @@ export const GradeBreakdownItemSchema = z.object({
 });
 
 export const GradeRecordSchema = z.object({
-  enrollmentId: z.string().uuid(),
-  sectionId: z.string().uuid(),
+  enrollmentId: DbUuidSchema,
+  sectionId: DbUuidSchema,
   sectionCode: z.string(),
   term: z.string(),
   status: z.enum(["enrolled", "completed"]),
-  courseId: z.string().uuid(),
+  courseId: DbUuidSchema,
   courseCode: z.string(),
   courseTitle: z.string(),
   credits: z.number().nonnegative(),
@@ -71,7 +72,7 @@ export const FacultyGradesResponseSchema = z.object({
   grades: z.array(
     GradeRecordSchema.extend({
       student: z.object({
-        id: z.string().uuid(),
+        id: DbUuidSchema,
         studentNumber: z.string(),
         fullName: z.string(),
         email: z.string().email(),
@@ -81,8 +82,8 @@ export const FacultyGradesResponseSchema = z.object({
 });
 
 export const TranscriptCourseResponseSchema = z.object({
-  enrollmentId: z.string().uuid(),
-  sectionId: z.string().uuid(),
+  enrollmentId: DbUuidSchema,
+  sectionId: DbUuidSchema,
   sectionCode: z.string(),
   status: z.enum(["enrolled", "completed"]),
   term: z.string(),
@@ -90,7 +91,7 @@ export const TranscriptCourseResponseSchema = z.object({
   startTime: z.string(),
   endTime: z.string(),
   room: z.string().nullable(),
-  courseId: z.string().uuid(),
+  courseId: DbUuidSchema,
   courseCode: z.string(),
   courseTitle: z.string(),
   credits: z.number().nonnegative(),

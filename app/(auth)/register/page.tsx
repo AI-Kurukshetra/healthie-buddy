@@ -38,6 +38,7 @@ export default async function RegisterPage({ searchParams }: RegisterPageProps) 
     <main className="mx-auto flex min-h-screen w-full max-w-[420px] items-center px-4 py-10 sm:px-6">
       <Card className="w-full">
         <CardHeader>
+          <p className="text-xs font-semibold uppercase tracking-[0.24em] text-teal-700">Campus Management</p>
           <CardTitle>Register</CardTitle>
           <CardDescription>
             Create an account and choose your role.
@@ -76,7 +77,9 @@ export default async function RegisterPage({ searchParams }: RegisterPageProps) 
               </Select>
             </div>
 
-            <Button type="submit">Create Account</Button>
+            <Button className="w-full" type="submit">
+              Create Account
+            </Button>
           </form>
 
           <p className="mt-6 text-sm text-gray-600">

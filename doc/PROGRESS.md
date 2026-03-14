@@ -185,3 +185,36 @@ Format: `[YYYY-MM-DD HH:MM] <agent> — <what was done>`
     + app/(auth)/login/page.tsx
   Checks passed: npm run lint ✓  npm run typecheck ✓
   Next handoff to: $agent-browser — verify login flow and capture any remaining Supabase auth error details from the UI
+- [2026-03-14 16:52] $frontend-design — Rebuilt dashboard chrome around a shared AppShell with role-aware sidebar, sticky header, logout menu, and shell-native page layouts.
+  Output files:
+    + components/layout/AppShell.tsx
+    + components/layout/AppSidebar.tsx
+    + components/layout/AppHeader.tsx
+    + components/layout/navigation.ts
+    + components/ui/avatar.tsx
+    + components/ui/badge.tsx
+    + components/ui/dropdown-menu.tsx
+    + components/ui/progress.tsx
+    + components/ui/separator.tsx
+    + app/(dashboard)/layout.tsx
+    + app/(dashboard)/student/page.tsx
+    + app/(dashboard)/student/enrollments/page.tsx
+    + app/(dashboard)/student/transcript/page.tsx
+    + app/(dashboard)/courses/page.tsx
+    + app/(dashboard)/faculty/page.tsx
+    + app/(dashboard)/faculty/sections/page.tsx
+    + app/(dashboard)/faculty/gradebook/page.tsx
+    + app/(dashboard)/faculty/sections/[sectionId]/gradebook/page.tsx
+    + app/(dashboard)/admin/page.tsx
+    + app/(dashboard)/admin/users/page.tsx
+  Checks passed: npm run lint ✓  npm run typecheck ✓
+  Next handoff to: $agent-browser — verify role-aware navigation, mobile sidebar, and logout flow end-to-end
+- [2026-03-14 17:09] $api-endpoint — Replaced strict RFC UUID validation with Postgres-compatible DB UUID validation for seeded identifiers used by gradebook, enrollments, and dashboard APIs.
+  Output files:
+    + lib/validations/identifiers.ts
+    + lib/validations/gradebook.ts
+    + lib/validations/enrollments.ts
+    + lib/validations/dashboard-api.ts
+    + tests/unit/identifierValidation.test.ts
+  Checks passed: npm run lint ✓  npm run typecheck ✓  npm test ✓
+  Next handoff to: $agent-browser — verify faculty gradebook load and score submission with seeded demo section IDs

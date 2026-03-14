@@ -1,12 +1,11 @@
-import type { Metadata } from "next";
 import Link from "next/link";
+import type { Metadata } from "next";
 import { requireRole } from "@/lib/auth/server";
 import { createClient } from "@/lib/supabase/server";
 import { FacultySections, type FacultySectionView } from "@/components/dashboard/FacultySections";
 import { GradingQueue } from "@/components/dashboard/GradingQueue";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 type FacultyRow = {
   id: string;
@@ -66,11 +65,11 @@ function getCompletionLabel(gradebookItems: number, enrolledStudents: number, co
 }
 
 export const metadata: Metadata = {
-  title: "Faculty Dashboard | NextGen Campus Hub",
-  description: "View assigned sections, grading workload, and gradebook status.",
+  title: "Faculty Sections | Campus Management",
+  description: "Review assigned sections and grading readiness.",
 };
 
-export default async function FacultyDashboardPage() {
+export default async function FacultySectionsPage() {
   const user = await requireRole("faculty");
   const supabase = await createClient();
 
@@ -84,7 +83,7 @@ export default async function FacultyDashboardPage() {
     return (
       <section className="space-y-6">
         <header className="space-y-2">
-          <h1 className="text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl">Faculty Dashboard</h1>
+          <h1 className="text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl">Sections</h1>
           <p className="text-sm text-slate-500">Faculty profile not found.</p>
         </header>
       </section>
@@ -102,7 +101,7 @@ export default async function FacultyDashboardPage() {
     return (
       <section className="space-y-6">
         <header className="space-y-2">
-          <h1 className="text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl">Faculty Dashboard</h1>
+          <h1 className="text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl">Sections</h1>
           <p className="text-sm text-slate-500">Could not load assigned sections.</p>
         </header>
       </section>
@@ -188,54 +187,29 @@ export default async function FacultyDashboardPage() {
     };
   });
 
-  const totalStudents = sectionViews.reduce((sum, section) => sum + section.enrolledStudents, 0);
-  const sectionsNeedingGrading = sectionViews.filter((section) => section.completionPercent < 100).length;
-
   return (
     <section className="space-y-8">
       <header className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
         <div className="space-y-3">
-          <Badge variant="secondary">Faculty Dashboard</Badge>
+          <Badge variant="secondary">Sections</Badge>
           <div className="space-y-2">
-            <h1 className="text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl">
-              Teaching load and grading progress
-            </h1>
-            <p className="max-w-2xl text-sm text-slate-500">
-              Track teaching load and grading progress, {user.fullName}.
+            <h1 className="text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl">Assigned teaching sections</h1>
+            <p className="max-w-3xl text-sm text-slate-500">
+              Review section rosters, grading readiness, and open each gradebook from one list.
             </p>
           </div>
         </div>
         <div className="flex flex-wrap gap-3">
-          <Link className={buttonVariants({ variant: "outline" })} href="/faculty/sections">
-            View Sections
+          <Link className={buttonVariants({ variant: "outline" })} href="/faculty">
+            Dashboard
           </Link>
           <Link className={buttonVariants({ variant: "secondary" })} href="/faculty/gradebook">
-            Open Gradebook
+            Gradebook
           </Link>
         </div>
       </header>
 
-      <Card>
-        <CardHeader className="pb-0">
-          <CardTitle>Faculty Overview</CardTitle>
-        </CardHeader>
-        <CardContent className="grid gap-4 md:grid-cols-3">
-          <div className="rounded-2xl border border-slate-200/80 bg-slate-50/70 p-4">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-400">Assigned Sections</p>
-            <p className="mt-3 text-3xl font-semibold text-slate-950">{sectionViews.length}</p>
-          </div>
-          <div className="rounded-2xl border border-slate-200/80 bg-slate-50/70 p-4">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-400">Students</p>
-            <p className="mt-3 text-3xl font-semibold text-slate-950">{totalStudents}</p>
-          </div>
-          <div className="rounded-2xl border border-slate-200/80 bg-slate-50/70 p-4">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-400">Needs Grading</p>
-            <p className="mt-3 text-3xl font-semibold text-slate-950">{sectionsNeedingGrading}</p>
-          </div>
-        </CardContent>
-      </Card>
-
-      <section className="grid gap-6 lg:grid-cols-[minmax(0,2fr)_minmax(320px,1fr)]">
+      <section className="grid gap-6 xl:grid-cols-[minmax(0,2fr)_minmax(320px,1fr)]">
         <FacultySections sections={sectionViews} />
         <GradingQueue sections={sectionViews} />
       </section>

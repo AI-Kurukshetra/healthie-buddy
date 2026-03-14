@@ -5,6 +5,8 @@ import { createClient } from "@/lib/supabase/server";
 import { getStudentTranscriptAggregate } from "@/lib/api/transcripts";
 import { GpaSummaryCard } from "@/components/transcript/GpaSummaryCard";
 import { TranscriptTable } from "@/components/transcript/TranscriptTable";
+import { Badge } from "@/components/ui/badge";
+import { buttonVariants } from "@/components/ui/button";
 
 type StudentRow = {
   id: string;
@@ -27,12 +29,12 @@ export default async function StudentTranscriptPage() {
 
   if (studentError || !studentRow?.id) {
     return (
-      <main className="mx-auto min-h-screen w-full max-w-[1200px] space-y-6 px-4 py-8 sm:px-6 lg:px-8">
+      <section className="space-y-6">
         <header className="space-y-2">
-          <h1 className="text-2xl font-semibold sm:text-3xl">Student Transcript</h1>
-          <p className="text-sm text-gray-600">Your profile is missing a student record.</p>
+          <h1 className="text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl">Student Transcript</h1>
+          <p className="text-sm text-slate-500">Your profile is missing a student record.</p>
         </header>
-      </main>
+      </section>
     );
   }
 
@@ -40,32 +42,38 @@ export default async function StudentTranscriptPage() {
 
   if (error || !data) {
     return (
-      <main className="mx-auto min-h-screen w-full max-w-[1200px] space-y-6 px-4 py-8 sm:px-6 lg:px-8">
+      <section className="space-y-6">
         <header className="space-y-2">
-          <h1 className="text-2xl font-semibold sm:text-3xl">Student Transcript</h1>
-          <p className="text-sm text-gray-600">Could not load transcript data right now.</p>
+          <h1 className="text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl">Student Transcript</h1>
+          <p className="text-sm text-slate-500">Could not load transcript data right now.</p>
         </header>
-      </main>
+      </section>
     );
   }
 
   const completedCourses = data.courses.filter((course) => course.status === "completed").length;
 
   return (
-    <main className="mx-auto min-h-screen w-full max-w-[1200px] space-y-6 px-4 py-8 sm:px-6 lg:px-8">
-      <header className="space-y-2">
-        <h1 className="text-2xl font-semibold sm:text-3xl">Student Transcript</h1>
-        <p className="text-sm text-gray-600">Track your academic standing and review grade breakdowns, {user.fullName}.</p>
+    <section className="space-y-8">
+      <header className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+        <div className="space-y-3">
+          <Badge variant="secondary">Transcript</Badge>
+          <div className="space-y-2">
+            <h1 className="text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl">Academic standing and grade detail</h1>
+            <p className="max-w-2xl text-sm text-slate-500">
+              Track your academic standing and review grade breakdowns, {user.fullName}.
+            </p>
+          </div>
+        </div>
+        <div className="flex flex-wrap gap-3">
+          <Link className={buttonVariants({ variant: "outline" })} href="/student">
+            Dashboard
+          </Link>
+          <Link className={buttonVariants({ variant: "secondary" })} href="/courses">
+            Browse Courses
+          </Link>
+        </div>
       </header>
-
-      <div className="flex flex-wrap gap-3">
-        <Link href="/student" className="rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-700">
-          Back to Student Dashboard
-        </Link>
-        <Link href="/courses" className="rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-700">
-          Browse Course Catalog
-        </Link>
-      </div>
 
       <GpaSummaryCard
         gpa={data.gpa}
@@ -76,6 +84,6 @@ export default async function StudentTranscriptPage() {
       />
 
       <TranscriptTable courses={data.courses} />
-    </main>
+    </section>
   );
 }

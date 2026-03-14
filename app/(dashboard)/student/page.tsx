@@ -4,6 +4,8 @@ import { requireRole } from "@/lib/auth/server";
 import { createClient } from "@/lib/supabase/server";
 import { getStudentTranscriptAggregate } from "@/lib/api/transcripts";
 import { GpaSummaryCard } from "@/components/transcript/GpaSummaryCard";
+import { Badge } from "@/components/ui/badge";
+import { buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 type StudentRow = {
@@ -41,12 +43,12 @@ export default async function StudentDashboardPage() {
 
   if (studentError || !studentRow?.id) {
     return (
-      <main className="mx-auto min-h-screen w-full max-w-[1200px] space-y-6 px-4 py-8 sm:px-6 lg:px-8">
+      <section className="space-y-6">
         <header className="space-y-2">
-          <h1 className="text-2xl font-semibold sm:text-3xl">Student Dashboard</h1>
-          <p className="text-sm text-gray-600">Your student profile is missing. Contact an administrator.</p>
+          <h1 className="text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl">Student Dashboard</h1>
+          <p className="text-sm text-slate-500">Your student profile is missing. Contact an administrator.</p>
         </header>
-      </main>
+      </section>
     );
   }
 
@@ -54,12 +56,12 @@ export default async function StudentDashboardPage() {
 
   if (error || !data) {
     return (
-      <main className="mx-auto min-h-screen w-full max-w-[1200px] space-y-6 px-4 py-8 sm:px-6 lg:px-8">
+      <section className="space-y-6">
         <header className="space-y-2">
-          <h1 className="text-2xl font-semibold sm:text-3xl">Student Dashboard</h1>
-          <p className="text-sm text-gray-600">Could not load dashboard data right now.</p>
+          <h1 className="text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl">Student Dashboard</h1>
+          <p className="text-sm text-slate-500">Could not load dashboard data right now.</p>
         </header>
-      </main>
+      </section>
     );
   }
 
@@ -77,10 +79,27 @@ export default async function StudentDashboardPage() {
   const completedCourses = data.courses.filter((course) => course.status === "completed").length;
 
   return (
-    <main className="mx-auto min-h-screen w-full max-w-[1200px] space-y-6 px-4 py-8 sm:px-6 lg:px-8">
-      <header className="space-y-2">
-        <h1 className="text-2xl font-semibold sm:text-3xl">Student Dashboard</h1>
-        <p className="text-sm text-gray-600">Welcome back, {user.fullName}. Here is your academic snapshot.</p>
+    <section className="space-y-8">
+      <header className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+        <div className="space-y-3">
+          <Badge variant="secondary">Student Dashboard</Badge>
+          <div className="space-y-2">
+            <h1 className="text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl">
+              Welcome back, {user.fullName}
+            </h1>
+            <p className="max-w-2xl text-sm text-slate-500">
+              Keep track of your GPA, course load, and upcoming section schedule from one place.
+            </p>
+          </div>
+        </div>
+        <div className="flex flex-wrap gap-3">
+          <Link className={buttonVariants({ variant: "outline" })} href="/courses">
+            Browse Courses
+          </Link>
+          <Link className={buttonVariants({ variant: "secondary" })} href="/student/transcript">
+            Open Transcript
+          </Link>
+        </div>
       </header>
 
       <GpaSummaryCard
@@ -94,21 +113,21 @@ export default async function StudentDashboardPage() {
       <section className="grid gap-6 lg:grid-cols-2">
         <Card>
           <CardHeader>
-            <CardTitle className="text-xl">Enrolled Courses</CardTitle>
+            <CardTitle>Enrolled Courses</CardTitle>
             <CardDescription>Current active section registrations.</CardDescription>
           </CardHeader>
           <CardContent>
             {enrolledCourses.length === 0 ? (
-              <p className="text-sm text-gray-600">No active enrollments found.</p>
+              <p className="text-sm text-slate-500">No active enrollments found.</p>
             ) : (
               <div className="space-y-3">
                 {enrolledCourses.map((course) => (
-                  <div key={course.enrollmentId} className="rounded-md border border-gray-200 p-3">
-                    <p className="font-medium text-gray-900">
+                  <div key={course.enrollmentId} className="rounded-2xl border border-slate-200/80 bg-slate-50/70 p-4">
+                    <p className="font-medium text-slate-950">
                       {course.courseCode} {course.courseTitle}
                     </p>
-                    <p className="text-sm text-gray-600">{course.term} • {course.sectionCode}</p>
-                    <p className="text-xs text-gray-500">Credits: {course.credits.toFixed(1)}</p>
+                    <p className="text-sm text-slate-500">{course.term} • {course.sectionCode}</p>
+                    <p className="text-xs text-slate-400">Credits: {course.credits.toFixed(1)}</p>
                   </div>
                 ))}
               </div>
@@ -118,21 +137,24 @@ export default async function StudentDashboardPage() {
 
         <Card>
           <CardHeader>
-            <CardTitle className="text-xl">Upcoming Section Schedule</CardTitle>
+            <CardTitle>Upcoming Section Schedule</CardTitle>
             <CardDescription>Weekly schedule for currently enrolled sections.</CardDescription>
           </CardHeader>
           <CardContent>
             {upcomingSchedule.length === 0 ? (
-              <p className="text-sm text-gray-600">No upcoming section times available.</p>
+              <p className="text-sm text-slate-500">No upcoming section times available.</p>
             ) : (
               <div className="space-y-3">
                 {upcomingSchedule.map((course) => (
-                  <div key={`${course.enrollmentId}-schedule`} className="rounded-md border border-gray-200 p-3">
-                    <p className="font-medium text-gray-900">{course.courseCode} {course.sectionCode}</p>
-                    <p className="text-sm text-gray-600">
+                  <div
+                    key={`${course.enrollmentId}-schedule`}
+                    className="rounded-2xl border border-slate-200/80 bg-slate-50/70 p-4"
+                  >
+                    <p className="font-medium text-slate-950">{course.courseCode} {course.sectionCode}</p>
+                    <p className="text-sm text-slate-500">
                       {DAY_LABELS[course.dayOfWeek] ?? "Unknown day"} {formatTime(course.startTime)}-{formatTime(course.endTime)}
                     </p>
-                    <p className="text-xs text-gray-500">Room: {course.room ?? "TBD"}</p>
+                    <p className="text-xs text-slate-400">Room: {course.room ?? "TBD"}</p>
                   </div>
                 ))}
               </div>
@@ -143,24 +165,30 @@ export default async function StudentDashboardPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle className="text-xl">Quick Links</CardTitle>
+          <CardTitle>Quick Links</CardTitle>
           <CardDescription>Jump to high-frequency student workflows.</CardDescription>
         </CardHeader>
         <CardContent className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          <Link href="/courses" className="rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50">
+          <Link className={buttonVariants({ className: "justify-start", variant: "outline" })} href="/courses">
             Course Catalog
           </Link>
-          <Link href="/student/transcript" className="rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50">
+          <Link
+            className={buttonVariants({ className: "justify-start", variant: "outline" })}
+            href="/student/transcript"
+          >
             Transcript
           </Link>
-          <Link href="/" className="rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50">
-            Main Dashboard
+          <Link
+            className={buttonVariants({ className: "justify-start", variant: "outline" })}
+            href="/student/enrollments"
+          >
+            Enrollments
           </Link>
-          <Link href="/faculty" className="rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50">
-            Faculty Area
+          <Link className={buttonVariants({ className: "justify-start", variant: "outline" })} href="/student">
+            Dashboard Home
           </Link>
         </CardContent>
       </Card>
-    </main>
+    </section>
   );
 }

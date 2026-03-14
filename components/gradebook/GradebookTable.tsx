@@ -272,18 +272,20 @@ export function GradebookTable({ sectionOptions, currentSectionId }: GradebookTa
               className="w-auto"
               disabled={isLoading || isSubmittingScores || pendingDraftKeys.length === 0}
               onClick={handleSubmitScores}
+              variant="secondary"
             >
               {isSubmittingScores ? "Submitting..." : `Submit Scores (${pendingDraftKeys.length})`}
             </Button>
             <Button
               type="button"
-              className="w-auto border border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
+              className="w-auto"
               disabled={isLoading}
               onClick={() => {
                 setDraftScores({});
                 setError(null);
                 setSuccess("Unsaved score edits were discarded.");
               }}
+              variant="outline"
             >
               Discard Changes
             </Button>

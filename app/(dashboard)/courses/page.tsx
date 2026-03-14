@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { requireUser } from "@/lib/auth/server";
+import { homePathForRole } from "@/lib/auth/routes";
 import { createClient } from "@/lib/supabase/server";
 import { CourseCatalog, type CourseCatalogItem } from "@/components/courses/CourseCatalog";
 
@@ -77,15 +78,15 @@ export default async function CoursesPage() {
 
   if (sectionsError) {
     return (
-      <main className="mx-auto min-h-screen w-full max-w-[1200px] px-4 py-8 sm:px-6 lg:px-8">
+      <section className="space-y-4">
         <header className="space-y-2">
-          <h1 className="text-2xl font-semibold sm:text-3xl">Course Catalog</h1>
-          <p className="text-sm text-gray-600">Browse published courses and sections.</p>
+          <h1 className="text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl">Course Catalog</h1>
+          <p className="text-sm text-slate-500">Browse published courses and sections.</p>
         </header>
-        <p className="mt-6 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+        <p className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
           Could not load courses right now. Please try again.
         </p>
-      </main>
+      </section>
     );
   }
 
@@ -150,5 +151,12 @@ export default async function CoursesPage() {
 
   const courses = [...courseMap.values()];
 
-  return <CourseCatalog userName={user.fullName} courses={courses} />;
+  return (
+    <CourseCatalog
+      courses={courses}
+      homeHref={homePathForRole(user.role)}
+      homeLabel={`${user.role[0]?.toUpperCase() ?? ""}${user.role.slice(1)} Dashboard`}
+      userName={user.fullName}
+    />
+  );
 }
