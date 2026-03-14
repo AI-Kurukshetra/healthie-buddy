@@ -4,6 +4,8 @@ import type { Metadata } from "next";
 import { requireRole } from "@/lib/auth/server";
 import { createClient } from "@/lib/supabase/server";
 import { GradebookTable } from "@/components/gradebook/GradebookTable";
+import { Badge } from "@/components/ui/badge";
+import { buttonVariants } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 
 type SectionRow = {
@@ -67,12 +69,12 @@ export default async function FacultyGradebookPage({ params }: PageProps) {
 
   if (sectionsError) {
     return (
-      <main className="mx-auto min-h-screen w-full max-w-[1200px] px-4 py-8 sm:px-6 lg:px-8">
-        <h1 className="text-2xl font-semibold">Faculty Gradebook</h1>
-        <p className="mt-2 rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+      <section className="space-y-4">
+        <h1 className="text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl">Faculty Gradebook</h1>
+        <p className="rounded-2xl border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
           Could not load your teaching sections.
         </p>
-      </main>
+      </section>
     );
   }
 
@@ -87,32 +89,44 @@ export default async function FacultyGradebookPage({ params }: PageProps) {
 
   if (sections.length === 0) {
     return (
-      <main className="mx-auto min-h-screen w-full max-w-[1200px] px-4 py-8 sm:px-6 lg:px-8">
-        <h1 className="text-2xl font-semibold">Faculty Gradebook</h1>
-        <p className="mt-2 text-sm text-gray-600">No assigned sections found.</p>
-      </main>
+      <section className="space-y-4">
+        <h1 className="text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl">Faculty Gradebook</h1>
+        <p className="text-sm text-slate-500">No assigned sections found.</p>
+      </section>
     );
   }
 
   const activeSectionId = sections.some((section) => section.id === sectionId) ? sectionId : sections[0].id;
 
   return (
-    <main className="mx-auto min-h-screen w-full max-w-[1200px] space-y-6 px-4 py-8 sm:px-6 lg:px-8">
-      <header className="space-y-2">
-        <h1 className="text-2xl font-semibold sm:text-3xl">Faculty Gradebook</h1>
-        <p className="text-sm text-gray-600">Manage roster scores for your assigned sections, {user.fullName}.</p>
+    <section className="space-y-8">
+      <header className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+        <div className="space-y-3">
+          <Badge variant="secondary">Gradebook</Badge>
+          <div className="space-y-2">
+            <h1 className="text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl">Manage roster scoring</h1>
+            <p className="max-w-2xl text-sm text-slate-500">
+              Manage roster scores for your assigned sections, {user.fullName}.
+            </p>
+          </div>
+        </div>
+        <div className="flex flex-wrap gap-3">
+          <Link className={buttonVariants({ variant: "outline" })} href="/faculty">
+            Faculty Dashboard
+          </Link>
+          <Link className={buttonVariants({ variant: "secondary" })} href="/faculty/sections">
+            All Sections
+          </Link>
+        </div>
       </header>
 
       <Card>
         <CardContent className="flex flex-wrap items-center gap-3 p-4">
-          <Link href="/faculty" className="rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-700">
-            Back to Faculty Dashboard
-          </Link>
-          <p className="text-sm text-gray-600">Use the section selector below, then submit all score edits at once.</p>
+          <p className="text-sm text-slate-500">Use the section selector below, then submit all score edits at once.</p>
         </CardContent>
       </Card>
 
       <GradebookTable sectionOptions={sections} currentSectionId={activeSectionId} />
-    </main>
+    </section>
   );
 }

@@ -1,4 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 
 export type SectionView = {
   id: string;
@@ -18,29 +19,32 @@ type SectionCardProps = {
 };
 
 export function SectionCard({ section }: SectionCardProps) {
+  const seatVariant = section.seatsRemaining > 0 ? "success" : "warning";
+
   return (
     <Card className="h-full">
-      <CardHeader className="space-y-1 p-4">
-        <p className="text-xs uppercase tracking-wide text-gray-500">
-          {section.term} · {section.sectionCode}
-        </p>
-        <CardTitle className="text-base">{section.dayLabel}</CardTitle>
+      <CardHeader className="space-y-3 p-5">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <Badge variant="outline">{section.term}</Badge>
+          <Badge variant={seatVariant}>{section.seatsRemaining} seats left</Badge>
+        </div>
+        <div>
+          <p className="text-xs uppercase tracking-[0.16em] text-slate-400">{section.sectionCode}</p>
+          <CardTitle className="mt-2 text-lg">{section.dayLabel}</CardTitle>
+        </div>
       </CardHeader>
-      <CardContent className="space-y-2 p-4 pt-0 text-sm text-gray-700">
+      <CardContent className="space-y-3 p-5 pt-0 text-sm text-slate-600">
         <p>
-          <span className="font-medium text-gray-900">Time:</span> {section.timeLabel}
+          <span className="font-medium text-slate-950">Time:</span> {section.timeLabel}
         </p>
         <p>
-          <span className="font-medium text-gray-900">Instructor:</span> {section.instructorName ?? "TBD"}
+          <span className="font-medium text-slate-950">Instructor:</span> {section.instructorName ?? "TBD"}
         </p>
         <p>
-          <span className="font-medium text-gray-900">Room:</span> {section.room ?? "TBD"}
+          <span className="font-medium text-slate-950">Room:</span> {section.room ?? "TBD"}
         </p>
         <p>
-          <span className="font-medium text-gray-900">Capacity:</span> {section.enrolledCount}/{section.capacity}
-        </p>
-        <p>
-          <span className="font-medium text-gray-900">Seats remaining:</span> {section.seatsRemaining}
+          <span className="font-medium text-slate-950">Capacity:</span> {section.enrolledCount}/{section.capacity}
         </p>
       </CardContent>
     </Card>

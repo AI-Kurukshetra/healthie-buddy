@@ -43,6 +43,7 @@ Legend: `[ ]` todo, `[~]` in-progress, `[x]` done, `[!]` blocked
 - [x] (2026-03-14 10:37 IST) Write migration + RLS policies for grades/transcript visibility.
 - [x] (2026-03-14 12:53 IST) Introduce gradebook schema (`gradebook_items`, `gradebook_scores`) with RLS policies.
 - [x] (2026-03-14 14:08 IST) Faculty gradebook entry and submission workflow.
+- [x] (2026-03-14 17:09 IST) Fix gradebook/API UUID validation to accept deterministic seeded Postgres UUIDs.
 - [x] (2026-03-14 14:25 IST) Student transcript view with GPA calculation.
 - [x] (2026-03-14 14:25 IST) Build lightweight student dashboard (enrolled courses + GPA snapshot).
 - [x] (2026-03-14 14:35 IST) Build lightweight faculty dashboard (assigned sections + grading queue).
@@ -53,6 +54,7 @@ Legend: `[ ]` todo, `[~]` in-progress, `[x]` done, `[!]` blocked
 
 ## 3. Cross-Milestone Quality & Release
 - [x] (2026-03-14 15:26 IST) Consolidate App Router dashboard routes under `app/(dashboard)` and remove duplicate `app/dashboard` tree.
+- [x] (2026-03-14 16:52 IST) Redesign dashboard UI with shared `AppShell`, role-aware sidebar, header dropdown logout, and shell-based page layouts.
 - [ ] Publish API contracts and validation schemas for all in-scope flows.
 - [ ] Run lint/typecheck/test gates and fix issues.
 - [ ] Prepare hackathon demo script and fallback paths.

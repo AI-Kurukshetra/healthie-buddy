@@ -35,6 +35,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
     <main className="mx-auto flex min-h-screen w-full max-w-[420px] items-center px-4 py-10 sm:px-6">
       <Card className="w-full">
         <CardHeader>
+          <p className="text-xs font-semibold uppercase tracking-[0.24em] text-teal-700">Campus Management</p>
           <CardTitle>Login</CardTitle>
           <CardDescription>
             Sign in with your student, faculty, or admin account.
@@ -73,7 +74,9 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
               </Select>
             </div>
 
-            <Button type="submit">Sign In</Button>
+            <Button className="w-full" type="submit">
+              Sign In
+            </Button>
           </form>
 
           <p className="mt-6 text-sm text-gray-600">

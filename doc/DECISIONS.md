@@ -104,3 +104,11 @@ Format:
 - [2026-03-14] Decision: Add a second repair migration to normalize SQL-seeded `auth.users` rows instead of dropping and recreating demo data.
   Rationale: Supabase auth can still reject direct SQL user rows when auth token fields remain null, so a non-destructive in-place repair is safer than resetting the entire demo dataset.
   Impact: Migration `20260314162358_repair_seeded_demo_auth_users.sql` now patches the seeded demo auth rows to a password-login-safe shape while preserving existing UUID relationships across `public.users`, `students`, `faculty`, enrollments, and transcripts.
+
+- [2026-03-14] Decision: Centralize all protected dashboard chrome in a shared AppShell layout.
+  Rationale: Repeating full-screen headers, containers, and action strips in each route made the app feel inconsistent and prevented global navigation/logout affordances.
+  Impact: `app/(dashboard)/layout.tsx` now owns the sticky header, role-aware sidebar, and centered content width, while route pages render only their page-specific content sections.
+
+- [2026-03-14] Decision: Validate app-facing database IDs against Postgres UUID format instead of RFC-only UUID rules.
+  Rationale: The demo seed uses deterministic UUID literals that Postgres accepts but Zod's RFC-oriented `.uuid()` validator rejects, which blocked gradebook and other API routes before the database query ran.
+  Impact: Shared validation now accepts both seeded deterministic IDs and standard RFC UUIDs, preventing false `invalid_input` errors on seeded demo data.

@@ -277,4 +277,37 @@
 - Updated login diagnostics in the auth flow:
   - `app/(auth)/actions.ts` now logs Supabase login failure `code/message/status` and redirects with diagnostic query params
   - `app/(auth)/login/page.tsx` now renders login diagnostic code/detail under the user-friendly error banner
+- Added a shared dashboard shell system:
+  - `components/layout/AppShell.tsx`
+  - `components/layout/AppSidebar.tsx`
+  - `components/layout/AppHeader.tsx`
+  - `components/layout/navigation.ts`
+- Added new shared UI primitives for the dashboard redesign:
+  - `components/ui/avatar.tsx`
+  - `components/ui/badge.tsx`
+  - `components/ui/dropdown-menu.tsx`
+  - `components/ui/progress.tsx`
+  - `components/ui/separator.tsx`
+- Upgraded existing shared UI primitives (`button`, `card`, `input`, `select`, `table`) with a consistent dashboard visual system and reusable button variants.
+- Refactored `app/(dashboard)/layout.tsx` to own the global shell, sidebar, sticky header, and centered content container.
+- Refactored dashboard route pages to render shell-native content sections instead of full-screen local wrappers:
+  - `app/(dashboard)/student/page.tsx`
+  - `app/(dashboard)/student/transcript/page.tsx`
+  - `app/(dashboard)/courses/page.tsx`
+  - `app/(dashboard)/faculty/page.tsx`
+  - `app/(dashboard)/faculty/sections/[sectionId]/gradebook/page.tsx`
+  - `app/(dashboard)/admin/page.tsx`
+- Added sidebar-target routes:
+  - `app/(dashboard)/student/enrollments/page.tsx`
+  - `app/(dashboard)/faculty/sections/page.tsx`
+  - `app/(dashboard)/faculty/gradebook/page.tsx`
+  - `app/(dashboard)/admin/users/page.tsx`
+- Refreshed dashboard-facing feature components:
+  - faculty sections table now includes badges and progress bars
+  - pending grading cards now include progress indicators
+  - GPA, transcript, course catalog, and section cards now follow the shared card/spacing system
+- Updated root fonts and global visual styling in `app/layout.tsx` and `app/globals.css`.
+- Added `lib/validations/identifiers.ts` with a Postgres-compatible UUID schema for deterministic seeded IDs that do not satisfy RFC version/variant bits.
+- Updated gradebook, enrollment, and dashboard API validation schemas to use the shared DB UUID validator instead of `z.string().uuid()`.
+- Added `tests/unit/identifierValidation.test.ts` covering seeded UUID acceptance, RFC UUID acceptance, and malformed ID rejection.
 - Updated `doc/SCHEMA.md`, `doc/TASKS.md`, `doc/PROGRESS.md`, and `doc/DECISIONS.md` for the demo-login repair.
