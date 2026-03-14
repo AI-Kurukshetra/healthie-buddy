@@ -59,7 +59,7 @@ export function FacultySections({ sections }: FacultySectionsProps) {
                     </TableCell>
                     <TableCell>
                       <Link
-                        href={`/dashboard/faculty/sections/${section.sectionId}/gradebook`}
+                        href={`/faculty/sections/${section.sectionId}/gradebook`}
                         className="rounded-md border border-gray-300 px-3 py-2 text-xs text-gray-700 hover:bg-gray-50"
                       >
                         Open Gradebook

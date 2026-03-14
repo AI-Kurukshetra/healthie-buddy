@@ -72,8 +72,9 @@ function getSingle<T>(value: T | T[] | null): T | null {
   return Array.isArray(value) ? (value[0] ?? null) : value;
 }
 
-export async function GET(_: Request, { params }: { params: { sectionId: string } }) {
-  const parsedParams = SectionIdParamSchema.safeParse(params);
+export async function GET(_: Request, { params }: { params: Promise<{ sectionId: string }> }) {
+  const resolvedParams = await params;
+  const parsedParams = SectionIdParamSchema.safeParse(resolvedParams);
 
   if (!parsedParams.success) {
     return errorResponse(400, "invalid_input", "Section id must be a valid uuid.");

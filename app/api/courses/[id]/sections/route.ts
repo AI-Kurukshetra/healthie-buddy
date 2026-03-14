@@ -50,8 +50,9 @@ function getSingle<T>(value: T | T[] | null): T | null {
   return Array.isArray(value) ? (value[0] ?? null) : value;
 }
 
-export async function GET(_: Request, { params }: { params: { id: string } }) {
-  const parsedParams = CourseIdParamSchema.safeParse(params);
+export async function GET(_: Request, { params }: { params: Promise<{ id: string }> }) {
+  const resolvedParams = await params;
+  const parsedParams = CourseIdParamSchema.safeParse(resolvedParams);
 
   if (!parsedParams.success) {
     return errorResponse(400, "invalid_input", "Course id must be a valid uuid.");

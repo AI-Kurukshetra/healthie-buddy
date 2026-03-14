@@ -92,3 +92,15 @@ Format:
 - [2026-03-14] Decision: Seed demo data using deterministic UUID-based inserts with `ON CONFLICT` upserts across auth/app/domain tables.
   Rationale: Hackathon demos need repeatable resets without destructive operations; deterministic IDs maintain FK integrity and idempotency.
   Impact: New migration `20260314150500_seed_demo_data.sql` seeds 39 users, academic catalog/sections, enrollments, gradebook scores, grades, and transcripts using insert-only logic compatible with repeated runs.
+
+- [2026-03-14] Decision: Canonicalize dashboard URLs to top-level App Router paths (`/student`, `/faculty`, `/admin`, `/courses`) under `app/(dashboard)` route group.
+  Rationale: Maintaining both `app/dashboard` and `app/(dashboard)` created duplicate routing trees and inconsistent link/redirect targets.
+  Impact: Removed `app/dashboard`, centralized pages under `app/(dashboard)`, and added middleware legacy redirects for `/dashboard/*` compatibility while preserving role-based access control.
+
+- [2026-03-14] Decision: Repair SQL-seeded demo auth users with a follow-up `auth.identities` backfill migration.
+  Rationale: Seeding `auth.users` alone leaves email/password demo accounts incomplete for Supabase auth; login must also have a matching email identity keyed to the auth user id.
+  Impact: Migration `20260314152500_backfill_demo_auth_identities.sql` now updates or inserts email-provider identities for all seeded demo accounts so `signInWithPassword` can authenticate them.
+
+- [2026-03-14] Decision: Add a second repair migration to normalize SQL-seeded `auth.users` rows instead of dropping and recreating demo data.
+  Rationale: Supabase auth can still reject direct SQL user rows when auth token fields remain null, so a non-destructive in-place repair is safer than resetting the entire demo dataset.
+  Impact: Migration `20260314162358_repair_seeded_demo_auth_users.sql` now patches the seeded demo auth rows to a password-login-safe shape while preserving existing UUID relationships across `public.users`, `students`, `faculty`, enrollments, and transcripts.

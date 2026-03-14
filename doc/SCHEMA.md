@@ -130,6 +130,14 @@
     - Scores: realistic 60–100% scoring bands
     - Grades and transcripts: derived from score aggregates and course credits
   - Maintains FK/unique constraints and avoids truncation for repeatable demo resets.
+- `20260314152500_backfill_demo_auth_identities.sql`
+  - Backfills `auth.identities` email-provider rows for demo users created in `20260314150500_seed_demo_data.sql`
+  - Normalizes seeded email identities to use `provider = 'email'` and `provider_id = auth.users.id`
+  - Repairs both missing identity rows and any previously mis-keyed demo identity rows
+- `20260314162358_repair_seeded_demo_auth_users.sql`
+  - Normalizes SQL-seeded demo `auth.users` rows used by the hackathon dataset
+  - Reasserts email-provider auth metadata and confirmed-email fields for `@demo-campus.edu` accounts
+  - Fills auth token columns with empty-string defaults when those columns exist in the current Supabase auth schema, avoiding password-login failures caused by null auth fields
 
 ## RLS Policy Log
 - RLS enabled on all core tables:

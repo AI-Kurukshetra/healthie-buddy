@@ -143,3 +143,45 @@ Format: `[YYYY-MM-DD HH:MM] <agent> — <what was done>`
     + doc/SCHEMA.md
   Checks passed: deliverables verified ✓
   Next handoff to: $agent-browser — validate seeded demo accounts and full grading/transcript journey in UI
+- [2026-03-14 15:26] codex — Consolidated App Router dashboard structure under `app/(dashboard)`, removed `app/dashboard`, and updated route redirects/links to `/student`, `/faculty`, `/admin`, `/courses`.
+  Output files:
+    + app/(dashboard)/layout.tsx
+    + app/(dashboard)/actions.ts
+    + app/(dashboard)/admin/page.tsx
+    + app/(dashboard)/courses/page.tsx
+    + app/(dashboard)/faculty/page.tsx
+    + app/(dashboard)/faculty/sections/[sectionId]/gradebook/page.tsx
+    + app/(dashboard)/student/page.tsx
+    + app/(dashboard)/student/transcript/page.tsx
+    + app/(auth)/actions.ts
+    + app/page.tsx
+    + app/forbidden.tsx
+    + middleware.ts
+    + lib/auth/routes.ts
+    + app/api/courses/[id]/sections/route.ts
+    + app/api/sections/[sectionId]/gradebook/route.ts
+  Checks passed: npm run typecheck ✓  npm run build ✗ (webpack error output not surfaced by Next in this environment)
+  Next handoff to: $pr-review — verify route migration and middleware guard behavior for legacy `/dashboard` redirects
+- [2026-03-14 16:08] $db-migration — Backfilled Supabase email identities for SQL-seeded demo auth users so password login succeeds.
+  Output files:
+    + supabase/migrations/20260314152500_backfill_demo_auth_identities.sql
+    + doc/SCHEMA.md
+  Checks passed: deliverables verified ✓  npm run lint ✓  npm run typecheck ✓
+  Next handoff to: $agent-browser — verify seeded admin/faculty/student login flow with demo credentials
+- [2026-03-14 16:18] $db-migration — Corrected demo identity backfill SQL to avoid writing generated `auth.identities.email` and derive it from `identity_data`.
+  Output files:
+    + supabase/migrations/20260314152500_backfill_demo_auth_identities.sql
+  Checks passed: deliverables verified ✓
+  Next handoff to: $agent-browser — verify seeded admin/faculty/student login flow with demo credentials
+- [2026-03-14 16:24] $db-migration — Added follow-up repair migration for SQL-seeded demo `auth.users` rows to fill auth-required non-null fields for password login.
+  Output files:
+    + supabase/migrations/20260314162358_repair_seeded_demo_auth_users.sql
+    + doc/SCHEMA.md
+  Checks passed: deliverables verified ✓
+  Next handoff to: $agent-browser — verify seeded admin/faculty/student login flow with demo credentials
+- [2026-03-14 16:26] codex — Added login failure diagnostics to preserve Supabase auth code/message in redirect state and server logs for faster troubleshooting.
+  Output files:
+    + app/(auth)/actions.ts
+    + app/(auth)/login/page.tsx
+  Checks passed: npm run lint ✓  npm run typecheck ✓
+  Next handoff to: $agent-browser — verify login flow and capture any remaining Supabase auth error details from the UI
