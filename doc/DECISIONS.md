@@ -88,3 +88,7 @@ Format:
 - [2026-03-14] Decision: Enforce API response contracts with Zod at route boundaries for dashboard-critical endpoints.
   Rationale: Dashboard UIs depend on stable normalized shapes; validating responses server-side catches mapping regressions early.
   Impact: `/api/students/me`, `/api/faculty/me`, `/api/grades`, and `/api/transcripts/me` now parse payloads against shared schemas in `lib/validations/dashboard-api.ts` before returning success responses.
+
+- [2026-03-14] Decision: Seed demo data using deterministic UUID-based inserts with `ON CONFLICT` upserts across auth/app/domain tables.
+  Rationale: Hackathon demos need repeatable resets without destructive operations; deterministic IDs maintain FK integrity and idempotency.
+  Impact: New migration `20260314150500_seed_demo_data.sql` seeds 39 users, academic catalog/sections, enrollments, gradebook scores, grades, and transcripts using insert-only logic compatible with repeated runs.

@@ -46,6 +46,7 @@ Legend: `[ ]` todo, `[~]` in-progress, `[x]` done, `[!]` blocked
 - [x] (2026-03-14 14:35 IST) Build lightweight faculty dashboard (assigned sections + grading queue).
 - [x] (2026-03-14 14:50 IST) Implement endpoint groups for `/grades`, `/transcripts`, plus role-scoped `/students` and `/faculty`.
 - [x] (2026-03-14 14:54 IST) Add unit tests for grade submission and GPA calculation.
+- [x] (2026-03-14 15:06 IST) Create idempotent demo seed migration across all schema tables for hackathon dataset.
 - [ ] Add E2E tests for the 5 core journeys (register/login, browse, enroll conflict, grade submit, transcript/GPA).
 
 ## 3. Cross-Milestone Quality & Release

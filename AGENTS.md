@@ -492,3 +492,7 @@ Never scaffold a new Next.js project inside a subdirectory
 (e.g. /bootstrap-app, /app-app, /frontend).
 
 The project already exists and must be modified in-place.
+
+Use route groups `(auth)` and `(dashboard)` for layout segmentation.
+- Never create duplicate route segments such as `/dashboard` outside the route group.
+- Dashboard pages must live inside `app/(dashboard)/`.
