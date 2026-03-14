@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { requireAuthenticatedContext } from "@/lib/api/auth";
 import { errorResponse, successResponse } from "@/lib/api/http";
+import { CourseSectionsResponseSchema } from "@/lib/validations/api-contracts";
 import { CourseIdParamSchema } from "@/lib/validations/enrollments";
 
 type CourseRow = {
@@ -112,8 +113,15 @@ export async function GET(_: Request, { params }: { params: Promise<{ id: string
     };
   });
 
-  return successResponse(200, {
+  const payload = {
     course,
     sections,
-  });
+  };
+  const parsed = CourseSectionsResponseSchema.safeParse(payload);
+
+  if (!parsed.success) {
+    return errorResponse(500, "invalid_response", "Course sections response validation failed.");
+  }
+
+  return successResponse(200, parsed.data);
 }

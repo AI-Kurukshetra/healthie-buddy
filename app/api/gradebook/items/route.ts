@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { requireFacultyContext } from "@/lib/api/auth";
 import { errorResponse, successResponse } from "@/lib/api/http";
+import { CreateGradebookItemResponseSchema } from "@/lib/validations/api-contracts";
 import { CreateGradebookItemSchema } from "@/lib/validations/gradebook";
 
 type SectionOwnerRow = {
@@ -64,7 +65,7 @@ export async function POST(request: Request) {
     return errorResponse(500, "item_create_failed", "Could not create gradebook item.");
   }
 
-  return successResponse(201, {
+  const payload = {
     item: {
       id: item?.id ?? null,
       sectionId: item?.section_id ?? parsed.data.sectionId,
@@ -73,5 +74,12 @@ export async function POST(request: Request) {
       maxPoints: item?.max_points ?? parsed.data.maxPoints,
       dueAt: item?.due_at ?? parsed.data.dueAt ?? null,
     },
-  });
+  };
+  const parsedResponse = CreateGradebookItemResponseSchema.safeParse(payload);
+
+  if (!parsedResponse.success) {
+    return errorResponse(500, "invalid_response", "Gradebook item response validation failed.");
+  }
+
+  return successResponse(201, parsedResponse.data);
 }

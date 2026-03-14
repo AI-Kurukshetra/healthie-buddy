@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { requireFacultyContext } from "@/lib/api/auth";
 import { errorResponse, successResponse } from "@/lib/api/http";
+import { GradebookScoresResponseSchema } from "@/lib/validations/api-contracts";
 import {
   UpsertGradebookScoreSchema,
   UpsertGradebookScoresBatchSchema,
@@ -168,7 +169,14 @@ export async function POST(request: Request) {
     savedScores.push(result.data);
   }
 
-  return successResponse(200, {
+  const payload = {
     scores: savedScores,
-  });
+  };
+  const parsedResponse = GradebookScoresResponseSchema.safeParse(payload);
+
+  if (!parsedResponse.success) {
+    return errorResponse(500, "invalid_response", "Gradebook scores response validation failed.");
+  }
+
+  return successResponse(200, parsedResponse.data);
 }

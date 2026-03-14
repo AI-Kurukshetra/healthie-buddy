@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { requireAuthenticatedContext } from "@/lib/api/auth";
 import { errorResponse, successResponse } from "@/lib/api/http";
+import { SectionGradebookResponseSchema } from "@/lib/validations/api-contracts";
 import { SectionIdParamSchema } from "@/lib/validations/gradebook";
 
 type SectionRow = {
@@ -169,7 +170,7 @@ export async function GET(_: Request, { params }: { params: Promise<{ sectionId:
       return errorResponse(500, "scores_lookup_failed", "Could not load gradebook scores.");
     }
 
-    return successResponse(200, {
+    const payload = {
       role: authContext.role,
       section: {
         id: sectionRow.id,
@@ -190,8 +191,22 @@ export async function GET(_: Request, { params }: { params: Promise<{ sectionId:
         dueAt: item.due_at,
       })),
       students,
-      scores: (scoreRows ?? []) as GradebookScoreRow[],
-    });
+      scores: ((scoreRows ?? []) as GradebookScoreRow[]).map((score) => ({
+        id: score.id,
+        itemId: score.item_id,
+        studentId: score.student_id,
+        score: score.score,
+        feedback: score.feedback,
+        gradedAt: score.graded_at,
+      })),
+    };
+    const parsed = SectionGradebookResponseSchema.safeParse(payload);
+
+    if (!parsed.success) {
+      return errorResponse(500, "invalid_response", "Faculty gradebook response validation failed.");
+    }
+
+    return successResponse(200, parsed.data);
   }
 
   if (authContext.role === "student") {
@@ -233,7 +248,7 @@ export async function GET(_: Request, { params }: { params: Promise<{ sectionId:
       return errorResponse(500, "scores_lookup_failed", "Could not load your scores.");
     }
 
-    return successResponse(200, {
+    const payload = {
       role: authContext.role,
       section: {
         id: sectionRow.id,
@@ -253,8 +268,22 @@ export async function GET(_: Request, { params }: { params: Promise<{ sectionId:
         maxPoints: item.max_points,
         dueAt: item.due_at,
       })),
-      scores: (scoreRows ?? []) as GradebookScoreRow[],
-    });
+      scores: ((scoreRows ?? []) as GradebookScoreRow[]).map((score) => ({
+        id: score.id,
+        itemId: score.item_id,
+        studentId: score.student_id,
+        score: score.score,
+        feedback: score.feedback,
+        gradedAt: score.graded_at,
+      })),
+    };
+    const parsed = SectionGradebookResponseSchema.safeParse(payload);
+
+    if (!parsed.success) {
+      return errorResponse(500, "invalid_response", "Student gradebook response validation failed.");
+    }
+
+    return successResponse(200, parsed.data);
   }
 
   return errorResponse(403, "forbidden", "Unsupported role for gradebook access.");

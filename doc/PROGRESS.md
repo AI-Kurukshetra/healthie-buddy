@@ -218,3 +218,23 @@ Format: `[YYYY-MM-DD HH:MM] <agent> — <what was done>`
     + tests/unit/identifierValidation.test.ts
   Checks passed: npm run lint ✓  npm run typecheck ✓  npm test ✓
   Next handoff to: $agent-browser — verify faculty gradebook load and score submission with seeded demo section IDs
+- [2026-03-14 17:24] codex — Published evaluation-ready README, architecture/API docs, hardened API response contracts, and added auth-action unit coverage.
+  Output files:
+    + README.md
+    + doc/ARCHITECTURE.md
+    + doc/API.md
+    + lib/validations/api-contracts.ts
+    + app/api/courses/route.ts
+    + app/api/courses/[id]/sections/route.ts
+    + app/api/enrollments/route.ts
+    + app/api/enrollments/my/route.ts
+    + app/api/gradebook/items/route.ts
+    + app/api/gradebook/scores/route.ts
+    + app/api/sections/[sectionId]/gradebook/route.ts
+    + components/gradebook/GradebookTable.tsx
+    + tests/unit/authActions.test.ts
+  Checks passed: npm run lint ✓  npm run typecheck ✓  npm test ✓
+  Next handoff to: $pr-review — audit architecture consistency, security, type safety, validation coverage, and documentation completeness
+- [2026-03-14 17:25] $pr-review — Completed full codebase audit for architecture consistency, security, type safety, code duplication, missing validations, and documentation completeness.
+  Findings: no unresolved high-severity issues after normalizing numeric course credits and validating in-scope API responses.
+  Residual risk: seeded login/logout and critical role journeys still rely on smoke-level E2E coverage rather than full end-to-end business-flow automation.

@@ -36,7 +36,7 @@ Legend: `[ ]` todo, `[~]` in-progress, `[x]` done, `[!]` blocked
 - [x] (2026-03-14 10:51 IST) Implement course catalog browsing with section timing/capacity metadata.
 - [x] (2026-03-14 12:37 IST) Implement enrollment flow with prerequisite and schedule conflict checks.
 - [x] (2026-03-14 12:49 IST) Implement endpoint groups for `/courses` and `/enrollments`.
-- [ ] Add unit tests for enrollment conflict-check logic.
+- [x] (2026-03-14 17:24 IST) Add unit tests for enrollment conflict-check logic.
 
 ### M3 – Academic records + dashboards
 - [x] (2026-03-14 10:37 IST) Design schema for grades and transcripts.
@@ -55,11 +55,12 @@ Legend: `[ ]` todo, `[~]` in-progress, `[x]` done, `[!]` blocked
 ## 3. Cross-Milestone Quality & Release
 - [x] (2026-03-14 15:26 IST) Consolidate App Router dashboard routes under `app/(dashboard)` and remove duplicate `app/dashboard` tree.
 - [x] (2026-03-14 16:52 IST) Redesign dashboard UI with shared `AppShell`, role-aware sidebar, header dropdown logout, and shell-based page layouts.
-- [ ] Publish API contracts and validation schemas for all in-scope flows.
-- [ ] Run lint/typecheck/test gates and fix issues.
+- [x] (2026-03-14 17:24 IST) Publish API contracts and validation schemas for all in-scope flows.
+- [x] (2026-03-14 17:24 IST) Run lint/typecheck/test gates and fix issues.
 - [ ] Prepare hackathon demo script and fallback paths.
 
 ## 4. Documentation Updates (as work completes)
+- [x] (2026-03-14 17:24 IST) Publish evaluation-ready documentation in `README.md`, `doc/ARCHITECTURE.md`, and `doc/API.md`.
 - [ ] Keep `SCHEMA.md` updated with each migration and RLS policy.
 - [ ] Log completed tasks in `PROGRESS.md` and significant changes in `CHANGELOG.md`.
 

@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { requireStudentContext } from "@/lib/api/auth";
 import { errorResponse, successResponse } from "@/lib/api/http";
+import { EnrollmentMutationResponseSchema } from "@/lib/validations/api-contracts";
 import { CreateEnrollmentSchema } from "@/lib/validations/enrollments";
 import { enrollStudentInSection } from "@/lib/api/enrollments";
 
@@ -20,5 +21,11 @@ export async function POST(request: Request) {
   }
 
   const result = await enrollStudentInSection(supabase, studentContext.studentId, parsed.data.sectionId);
-  return successResponse(result.status, result.body);
+  const parsedResponse = EnrollmentMutationResponseSchema.safeParse(result.body);
+
+  if (!parsedResponse.success) {
+    return errorResponse(500, "invalid_response", "Enrollment response validation failed.");
+  }
+
+  return successResponse(result.status, parsedResponse.data);
 }

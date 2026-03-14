@@ -258,6 +258,26 @@
   - protect new top-level paths (`/student`, `/faculty`, `/admin`, `/courses`)
   - enforce role guards on new prefixes
   - redirect legacy `/dashboard` and `/dashboard/*` URLs to new canonical routes
+- Added evaluation-ready documentation:
+  - `README.md` rewritten with project overview, architecture/data diagrams, tech stack, security model, demo accounts, and setup instructions
+  - `doc/ARCHITECTURE.md` added for system layers, frontend/API architecture, RBAC, and RLS strategy
+  - `doc/API.md` added for method/path/request/response/auth documentation of all JSON endpoints
+- Added shared API response contract schemas in `lib/validations/api-contracts.ts`.
+- Hardened route response validation for:
+  - `GET /api/courses`
+  - `GET /api/courses/[id]/sections`
+  - `POST /api/enrollments`
+  - `GET /api/enrollments/my`
+  - `POST /api/gradebook/items`
+  - `POST /api/gradebook/scores`
+  - `GET /api/sections/[sectionId]/gradebook`
+- Normalized API payload consistency:
+  - `GET /api/enrollments/my` now returns camelCase enrollment/section/course fields
+  - `GET /api/sections/[sectionId]/gradebook` now returns camelCase score fields (`itemId`, `studentId`, `gradedAt`)
+  - course credit numerics are normalized to numbers before response validation to avoid Postgres numeric serialization drift
+- Added `tests/unit/authActions.test.ts` covering invalid auth-form redirects and logout sign-out behavior.
+- Executed `npm run lint`, `npm run typecheck`, and `npm test`: passed (`7` files, `22` tests).
+- `$pr-review` audit completed: no unresolved high-severity findings remain; residual risk is limited to smoke-level E2E coverage for seeded login/logout and full role journeys.
   - redirect authenticated users away from `/login|/register` to role-specific home paths.
 - Fixed Next 15 route handler type signatures in:
   - `app/api/courses/[id]/sections/route.ts`

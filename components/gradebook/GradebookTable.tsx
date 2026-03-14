@@ -33,11 +33,11 @@ type GradebookItem = {
 
 type GradebookScore = {
   id: string;
-  item_id: string;
-  student_id: string;
+  itemId: string;
+  studentId: string;
   score: number;
   feedback: string | null;
-  graded_at: string;
+  gradedAt: string;
 };
 
 type GradebookResponse = {
@@ -116,7 +116,7 @@ export function GradebookTable({ sectionOptions, currentSectionId }: GradebookTa
     const map = new Map<string, GradebookScore>();
 
     for (const row of data?.scores ?? []) {
-      map.set(keyFor(row.item_id, row.student_id), row);
+      map.set(keyFor(row.itemId, row.studentId), row);
     }
 
     return map;
