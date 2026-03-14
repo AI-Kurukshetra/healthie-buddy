@@ -218,6 +218,34 @@ Format: `[YYYY-MM-DD HH:MM] <agent> — <what was done>`
     + tests/unit/identifierValidation.test.ts
   Checks passed: npm run lint ✓  npm run typecheck ✓  npm test ✓
   Next handoff to: $agent-browser — verify faculty gradebook load and score submission with seeded demo section IDs
+- [2026-03-14 17:57] $frontend-design — Removed the redundant login role selector and aligned auth UI guidance with server-side role resolution.
+  Output files:
+    + app/(auth)/login/page.tsx
+    + doc/UI_GUIDELINES.md
+    + doc/TASKS.md
+    + doc/CHANGELOG.md
+    + doc/DECISIONS.md
+  Checks passed: npm run lint ✓  npm run typecheck ✓
+  Next handoff to: coordinator — ready to continue deployment or further auth UX cleanup
+- [2026-03-14 18:02] $api-endpoint — Fixed faculty gradebook response validation to accept Supabase numeric-string and offset-timestamp payloads, and added a regression test for the failing contract.
+  Output files:
+    + lib/validations/api-contracts.ts
+    + app/api/sections/[sectionId]/gradebook/route.ts
+    + tests/unit/apiContracts.test.ts
+    + doc/TASKS.md
+    + doc/CHANGELOG.md
+    + doc/DECISIONS.md
+  Checks passed: npm run lint ✓  npm run typecheck ✓  npm test ✓
+  Next handoff to: $agent-browser — verify faculty gradebook loads and score save flow in the browser
+- [2026-03-14 18:27] codex — Prepared the demo walkthrough, role-by-role product explanation, and fallback path for backend-only enrollment in a dedicated demo guide.
+  Output files:
+    + doc/DEMO.md
+    + doc/TASKS.md
+    + doc/PROGRESS.md
+    + doc/CHANGELOG.md
+    + doc/DECISIONS.md
+  Checks passed: documentation updated ✓
+  Next handoff to: coordinator — ready for demo recording or final deployment work
 - [2026-03-14 17:24] codex — Published evaluation-ready README, architecture/API docs, hardened API response contracts, and added auth-action unit coverage.
   Output files:
     + README.md

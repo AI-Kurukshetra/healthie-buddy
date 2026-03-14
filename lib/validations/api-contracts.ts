@@ -1,6 +1,10 @@
 import { z } from "zod";
 import { DbUuidSchema } from "@/lib/validations/identifiers";
 
+const ApiDateTimeSchema = z.string().datetime({ offset: true });
+const ApiNonNegativeNumberSchema = z.coerce.number().nonnegative();
+const ApiPositiveNumberSchema = z.coerce.number().positive();
+
 export const ApiErrorBodySchema = z.object({
   error: z.string(),
   message: z.string(),
@@ -11,7 +15,7 @@ export const CourseSchema = z.object({
   code: z.string(),
   title: z.string(),
   description: z.string().nullable(),
-  credits: z.number().nonnegative(),
+  credits: ApiNonNegativeNumberSchema,
 });
 
 export const CoursesResponseSchema = z.object({
@@ -55,7 +59,7 @@ export const EnrollmentCourseSchema = z.object({
   id: DbUuidSchema,
   code: z.string(),
   title: z.string(),
-  credits: z.number().nonnegative(),
+  credits: ApiNonNegativeNumberSchema,
 });
 
 export const EnrollmentSectionSchema = z.object({
@@ -72,7 +76,7 @@ export const EnrollmentSectionSchema = z.object({
 export const EnrollmentRecordSchema = z.object({
   id: DbUuidSchema,
   status: z.enum(["enrolled", "completed", "dropped"]),
-  enrolledAt: z.string().datetime(),
+  enrolledAt: ApiDateTimeSchema,
   section: EnrollmentSectionSchema,
 });
 
@@ -85,8 +89,8 @@ export const GradebookItemResponseSchema = z.object({
   sectionId: DbUuidSchema,
   title: z.string(),
   description: z.string().nullable(),
-  maxPoints: z.number().positive(),
-  dueAt: z.string().datetime().nullable(),
+  maxPoints: ApiPositiveNumberSchema,
+  dueAt: ApiDateTimeSchema.nullable(),
 });
 
 export const CreateGradebookItemResponseSchema = z.object({
@@ -97,9 +101,9 @@ export const GradebookScoreResponseSchema = z.object({
   id: DbUuidSchema.nullable(),
   itemId: DbUuidSchema,
   studentId: DbUuidSchema,
-  score: z.number().nonnegative(),
+  score: ApiNonNegativeNumberSchema,
   feedback: z.string().nullable(),
-  gradedAt: z.string().datetime(),
+  gradedAt: ApiDateTimeSchema,
 });
 
 export const GradebookScoresResponseSchema = z.object({

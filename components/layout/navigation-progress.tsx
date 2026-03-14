@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { usePathname, useSearchParams } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 
 type NavigationProgressContextValue = {
@@ -16,8 +16,6 @@ export function NavigationProgressProvider({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const searchKey = searchParams.toString();
   const [isVisible, setIsVisible] = React.useState(false);
   const [progress, setProgress] = React.useState(0);
   const intervalRef = React.useRef<number | null>(null);
@@ -87,7 +85,7 @@ export function NavigationProgressProvider({
     }
 
     completeNavigation();
-  }, [pathname, searchKey, completeNavigation]);
+  }, [pathname, completeNavigation]);
 
   React.useEffect(() => {
     return () => {

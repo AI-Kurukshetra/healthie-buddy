@@ -24,6 +24,7 @@ Legend: `[ ]` todo, `[~]` in-progress, `[x]` done, `[!]` blocked
 - [x] (2026-03-14 12:15 IST) Add actionable register signup failure diagnostics (Supabase error code/message) to UI.
 - [x] (2026-03-14 13:08 IST) Fix auth-route redirect loop (`/login` ↔ `/dashboard`) when authenticated users lack valid app role/profile rows.
 - [x] (2026-03-14 10:41 IST) Implement login/logout and session-based redirects.
+- [x] (2026-03-14 17:57 IST) Remove redundant role selector from login and resolve role after authentication.
 - [x] (2026-03-14 10:41 IST) Implement RBAC guards for routes and server actions (`student`, `faculty`, `admin`).
 - [x] (2026-03-14 10:50 IST) Define minimal demo data seed strategy for students and faculty users.
 - [x] (2026-03-14 11:56 IST) Add and run Playwright smoke checks for auth pages and unauthenticated route guards.
@@ -44,6 +45,7 @@ Legend: `[ ]` todo, `[~]` in-progress, `[x]` done, `[!]` blocked
 - [x] (2026-03-14 12:53 IST) Introduce gradebook schema (`gradebook_items`, `gradebook_scores`) with RLS policies.
 - [x] (2026-03-14 14:08 IST) Faculty gradebook entry and submission workflow.
 - [x] (2026-03-14 17:09 IST) Fix gradebook/API UUID validation to accept deterministic seeded Postgres UUIDs.
+- [x] (2026-03-14 18:02 IST) Fix faculty gradebook response validation for Supabase numeric and timestamptz payloads.
 - [x] (2026-03-14 14:25 IST) Student transcript view with GPA calculation.
 - [x] (2026-03-14 14:25 IST) Build lightweight student dashboard (enrolled courses + GPA snapshot).
 - [x] (2026-03-14 14:35 IST) Build lightweight faculty dashboard (assigned sections + grading queue).
@@ -58,7 +60,7 @@ Legend: `[ ]` todo, `[~]` in-progress, `[x]` done, `[!]` blocked
 - [x] (2026-03-14 17:36 IST) Implement consistent loading, pending-action, toast, and navigation feedback states across auth and dashboard flows.
 - [x] (2026-03-14 17:24 IST) Publish API contracts and validation schemas for all in-scope flows.
 - [x] (2026-03-14 17:24 IST) Run lint/typecheck/test gates and fix issues.
-- [ ] Prepare hackathon demo script and fallback paths.
+- [x] (2026-03-14 18:27 IST) Prepare hackathon demo script and fallback paths.
 
 ## 4. Documentation Updates (as work completes)
 - [x] (2026-03-14 17:24 IST) Publish evaluation-ready documentation in `README.md`, `doc/ARCHITECTURE.md`, and `doc/API.md`.

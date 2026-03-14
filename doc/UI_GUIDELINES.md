@@ -9,7 +9,8 @@
 - Build auth forms with shadcn/ui Card layout.
 - Include title and subtitle at the top of each auth card.
 - Every input must include a visible label.
-- Role selection must use a dropdown selector.
+- Show the role selector only on registration, where it determines profile provisioning.
+- Do not ask for role selection on login; resolve the user role after authentication.
 - Primary action uses the default button style.
 - Secondary navigation links route between login/register.
 
