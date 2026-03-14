@@ -1,5 +1,5 @@
-import Link from "next/link";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { AppLink } from "@/components/ui/app-link";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import { SectionCard, type SectionView } from "@/components/courses/SectionCard";
@@ -33,9 +33,9 @@ export function CourseCatalog({ homeHref, homeLabel, userName, courses }: Course
           </div>
         </div>
         <div className="flex flex-wrap gap-3">
-          <Link className={buttonVariants({ variant: "secondary" })} href={homeHref}>
+          <AppLink className={buttonVariants({ variant: "secondary" })} href={homeHref}>
             {homeLabel}
-          </Link>
+          </AppLink>
         </div>
       </header>
 

@@ -1,9 +1,9 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { requireRole } from "@/lib/auth/server";
 import { createClient } from "@/lib/supabase/server";
 import { GradebookTable } from "@/components/gradebook/GradebookTable";
+import { AppLink } from "@/components/ui/app-link";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -111,12 +111,12 @@ export default async function FacultyGradebookPage({ params }: PageProps) {
           </div>
         </div>
         <div className="flex flex-wrap gap-3">
-          <Link className={buttonVariants({ variant: "outline" })} href="/faculty">
+          <AppLink className={buttonVariants({ variant: "outline" })} href="/faculty">
             Faculty Dashboard
-          </Link>
-          <Link className={buttonVariants({ variant: "secondary" })} href="/faculty/sections">
+          </AppLink>
+          <AppLink className={buttonVariants({ variant: "secondary" })} href="/faculty/sections">
             All Sections
-          </Link>
+          </AppLink>
         </div>
       </header>
 

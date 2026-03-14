@@ -1,9 +1,10 @@
-import Link from "next/link";
 import { requireRole } from "@/lib/auth/server";
 import { adminOnlyAction } from "../actions";
+import { AppLink } from "@/components/ui/app-link";
 import { Badge } from "@/components/ui/badge";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { FormSubmitButton } from "@/components/ui/form-submit-button";
 
 export default async function AdminPage() {
   const user = await requireRole("admin");
@@ -21,12 +22,12 @@ export default async function AdminPage() {
           </div>
         </div>
         <div className="flex flex-wrap gap-3">
-          <Link className={buttonVariants({ variant: "outline" })} href="/courses">
+          <AppLink className={buttonVariants({ variant: "outline" })} href="/courses">
             Courses
-          </Link>
-          <Link className={buttonVariants({ variant: "secondary" })} href="/admin/users">
+          </AppLink>
+          <AppLink className={buttonVariants({ variant: "secondary" })} href="/admin/users">
             Users
-          </Link>
+          </AppLink>
         </div>
       </header>
 
@@ -37,7 +38,7 @@ export default async function AdminPage() {
         </CardHeader>
         <CardContent className="flex flex-wrap items-center gap-4">
           <form action={adminOnlyAction}>
-            <Button type="submit">Run admin action</Button>
+            <FormSubmitButton pendingLabel="Running...">Run admin action</FormSubmitButton>
           </form>
         </CardContent>
       </Card>

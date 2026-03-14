@@ -55,6 +55,7 @@ Legend: `[ ]` todo, `[~]` in-progress, `[x]` done, `[!]` blocked
 ## 3. Cross-Milestone Quality & Release
 - [x] (2026-03-14 15:26 IST) Consolidate App Router dashboard routes under `app/(dashboard)` and remove duplicate `app/dashboard` tree.
 - [x] (2026-03-14 16:52 IST) Redesign dashboard UI with shared `AppShell`, role-aware sidebar, header dropdown logout, and shell-based page layouts.
+- [x] (2026-03-14 17:36 IST) Implement consistent loading, pending-action, toast, and navigation feedback states across auth and dashboard flows.
 - [x] (2026-03-14 17:24 IST) Publish API contracts and validation schemas for all in-scope flows.
 - [x] (2026-03-14 17:24 IST) Run lint/typecheck/test gates and fix issues.
 - [ ] Prepare hackathon demo script and fallback paths.

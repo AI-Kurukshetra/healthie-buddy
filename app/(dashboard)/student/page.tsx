@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { requireRole } from "@/lib/auth/server";
 import { createClient } from "@/lib/supabase/server";
 import { getStudentTranscriptAggregate } from "@/lib/api/transcripts";
+import { AppLink } from "@/components/ui/app-link";
 import { GpaSummaryCard } from "@/components/transcript/GpaSummaryCard";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
@@ -93,12 +93,12 @@ export default async function StudentDashboardPage() {
           </div>
         </div>
         <div className="flex flex-wrap gap-3">
-          <Link className={buttonVariants({ variant: "outline" })} href="/courses">
+          <AppLink className={buttonVariants({ variant: "outline" })} href="/courses">
             Browse Courses
-          </Link>
-          <Link className={buttonVariants({ variant: "secondary" })} href="/student/transcript">
+          </AppLink>
+          <AppLink className={buttonVariants({ variant: "secondary" })} href="/student/transcript">
             Open Transcript
-          </Link>
+          </AppLink>
         </div>
       </header>
 
@@ -169,24 +169,24 @@ export default async function StudentDashboardPage() {
           <CardDescription>Jump to high-frequency student workflows.</CardDescription>
         </CardHeader>
         <CardContent className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          <Link className={buttonVariants({ className: "justify-start", variant: "outline" })} href="/courses">
+          <AppLink className={buttonVariants({ className: "justify-start", variant: "outline" })} href="/courses">
             Course Catalog
-          </Link>
-          <Link
+          </AppLink>
+          <AppLink
             className={buttonVariants({ className: "justify-start", variant: "outline" })}
             href="/student/transcript"
           >
             Transcript
-          </Link>
-          <Link
+          </AppLink>
+          <AppLink
             className={buttonVariants({ className: "justify-start", variant: "outline" })}
             href="/student/enrollments"
           >
             Enrollments
-          </Link>
-          <Link className={buttonVariants({ className: "justify-start", variant: "outline" })} href="/student">
+          </AppLink>
+          <AppLink className={buttonVariants({ className: "justify-start", variant: "outline" })} href="/student">
             Dashboard Home
-          </Link>
+          </AppLink>
         </CardContent>
       </Card>
     </section>

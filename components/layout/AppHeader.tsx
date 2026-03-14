@@ -4,6 +4,7 @@ import { logoutAction } from "@/app/(auth)/actions";
 import type { SessionUser } from "@/lib/auth/types";
 import { cn } from "@/lib/utils";
 import { useAppShell } from "@/components/layout/AppShell";
+import { LogoutMenuItem } from "@/components/layout/LogoutMenuItem";
 import { getRoleLabel } from "@/components/layout/navigation";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button, buttonVariants } from "@/components/ui/button";
@@ -74,13 +75,7 @@ export function AppHeader({ user }: AppHeaderProps) {
             <DropdownMenuSeparator />
             <DropdownMenuItem disabled>Profile</DropdownMenuItem>
             <form action={logoutAction}>
-              <DropdownMenuItem
-                className="text-rose-600 hover:bg-rose-50 hover:text-rose-700"
-                closeOnSelect={false}
-                type="submit"
-              >
-                Logout
-              </DropdownMenuItem>
+              <LogoutMenuItem />
             </form>
           </DropdownMenuContent>
         </DropdownMenu>

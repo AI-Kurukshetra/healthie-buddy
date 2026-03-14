@@ -238,3 +238,36 @@ Format: `[YYYY-MM-DD HH:MM] <agent> — <what was done>`
 - [2026-03-14 17:25] $pr-review — Completed full codebase audit for architecture consistency, security, type safety, code duplication, missing validations, and documentation completeness.
   Findings: no unresolved high-severity issues after normalizing numeric course credits and validating in-scope API responses.
   Residual risk: seeded login/logout and critical role journeys still rely on smoke-level E2E coverage rather than full end-to-end business-flow automation.
+- [2026-03-14 17:36] $frontend-design — Added consistent route loading states, pending form buttons, toast feedback, and navigation progress across auth and dashboard flows.
+  Output files:
+    + app/(auth)/loading.tsx
+    + app/(dashboard)/loading.tsx
+    + app/layout.tsx
+    + app/(auth)/login/page.tsx
+    + app/(auth)/register/page.tsx
+    + app/(dashboard)/admin/page.tsx
+    + app/(dashboard)/admin/users/page.tsx
+    + app/(dashboard)/faculty/page.tsx
+    + app/(dashboard)/faculty/sections/page.tsx
+    + app/(dashboard)/faculty/sections/[sectionId]/gradebook/page.tsx
+    + app/(dashboard)/student/page.tsx
+    + app/(dashboard)/student/enrollments/page.tsx
+    + app/(dashboard)/student/transcript/page.tsx
+    + app/forbidden.tsx
+    + components/courses/CourseCatalog.tsx
+    + components/dashboard/FacultySections.tsx
+    + components/dashboard/GradingQueue.tsx
+    + components/gradebook/GradebookTable.tsx
+    + components/layout/AppHeader.tsx
+    + components/layout/AppSidebar.tsx
+    + components/layout/LogoutMenuItem.tsx
+    + components/layout/navigation-progress.tsx
+    + components/ui/app-link.tsx
+    + components/ui/form-submit-button.tsx
+    + components/ui/loading-card.tsx
+    + components/ui/loading-spinner.tsx
+    + components/ui/loading-table.tsx
+    + components/ui/skeleton.tsx
+    + components/ui/toast.tsx
+  Checks passed: npm run lint ✓  npm run typecheck ✓  npm test ✓
+  Next handoff to: $agent-browser — verify login/register pending states, dashboard route loaders, top progress bar, and gradebook save/create feedback in the browser

@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { registerAction } from "../actions";
 import {
   Card,
@@ -7,10 +6,11 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { AppLink } from "@/components/ui/app-link";
+import { FormSubmitButton } from "@/components/ui/form-submit-button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
 
 const REGISTER_ERROR_MESSAGE: Record<string, string> = {
   invalid_input: "Please complete all required fields with valid values.",
@@ -77,16 +77,16 @@ export default async function RegisterPage({ searchParams }: RegisterPageProps) 
               </Select>
             </div>
 
-            <Button className="w-full" type="submit">
+            <FormSubmitButton className="w-full" pendingLabel="Creating Account...">
               Create Account
-            </Button>
+            </FormSubmitButton>
           </form>
 
           <p className="mt-6 text-sm text-gray-600">
             Already have an account?{" "}
-            <Link href="/login" className="font-medium text-black underline">
+            <AppLink href="/login" className="font-medium text-black underline">
               Sign in
-            </Link>
+            </AppLink>
           </p>
         </CardContent>
       </Card>
