@@ -204,3 +204,18 @@
 - Gradebook completion status is now computed per section as scored-cells coverage against expected cells (`students × gradebook_items`).
 - Executed deliverable verification script for faculty dashboard files.
 - Executed `npm run lint` and `npm run typecheck`: passed.
+- Added endpoint group routes:
+  - `GET /api/students/me` via `app/api/students/me/route.ts`
+  - `GET /api/faculty/me` via `app/api/faculty/me/route.ts`
+  - `GET /api/grades` via `app/api/grades/route.ts`
+  - Enhanced `GET /api/transcripts/me` via `app/api/transcripts/me/route.ts` with response validation
+- Added API normalization/aggregation helpers:
+  - `lib/api/grades.ts` for student/faculty grade retrieval and normalized dashboard grade records
+  - `lib/validations/dashboard-api.ts` for Zod response schemas (`students/me`, `faculty/me`, `grades`, `transcripts/me`)
+- Endpoint behavior updates:
+  - Enforced RBAC using existing auth context helpers (`requireAuthenticatedContext`, `requireStudentContext`, `requireFacultyContext`)
+  - Kept all data access through Supabase SSR client to respect RLS policies
+  - Added response-shape validation before emitting success payloads
+  - Normalized dashboard-oriented payload structures for student/faculty summaries and grade records
+- Executed deliverable verification script for new endpoint files.
+- Executed `npm run lint`, `npm run typecheck`, and `npm test`: passed.
