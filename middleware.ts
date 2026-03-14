@@ -32,7 +32,25 @@ export async function middleware(request: NextRequest) {
   }
 
   if (user && isAuthRoute) {
-    return redirectTo(request, "/dashboard");
+    const { data: userRow } = await supabase
+      .from("users")
+      .select("role_id")
+      .eq("id", user.id)
+      .maybeSingle<{ role_id: string }>();
+
+    if (userRow?.role_id) {
+      const { data: roleRow } = await supabase
+        .from("roles")
+        .select("code")
+        .eq("id", userRow.role_id)
+        .maybeSingle<{ code: string }>();
+
+      if (roleRow?.code) {
+        return redirectTo(request, "/dashboard");
+      }
+    }
+
+    return response;
   }
 
   const needsRoleGuard = Object.values(ROLE_ROUTE_PREFIX)

@@ -65,3 +65,111 @@
   - `components/ui/select.tsx`
   - `components/ui/button.tsx`
 - Updated `doc/PROGRESS.md` with a formal `$frontend-design` handoff record and deliverables.
+- Patched `app/(auth)/actions.ts` registration role resolution:
+  - `getRoleIdByCode` now upserts (`student`, `faculty`, `admin`) role rows and returns the role id
+  - Prevents runtime failure when roles were not pre-seeded (`Role is not configured.`)
+- Logged `$api-endpoint` handoff record in `doc/PROGRESS.md`.
+- Patched `app/(auth)/actions.ts` register flow logic again:
+  - `getRoleIdByCode` now performs select-only lookup
+  - Role lookup is executed after `auth.signUp`, so RLS-authenticated role reads are available
+  - Fixes `Role is not configured.` caused by pre-signup unauthenticated role query
+- Added follow-up `$api-endpoint` handoff entry in `doc/PROGRESS.md`.
+- Added server-only admin Supabase client in `lib/supabase/admin.ts` (uses `SUPABASE_SERVICE_ROLE_KEY` when present).
+- Hardened registration provisioning in `app/(auth)/actions.ts`:
+  - Role lookup now uses privileged client fallback to avoid dependency on immediate auth session after sign-up.
+  - Inserts into `users`, `students`, and `faculty` now use the same privileged fallback path.
+  - Prevents `Role is not configured.` when role rows exist but signup session is not yet established.
+- Improved register error handling in `app/(auth)/actions.ts`:
+  - Role lookup failures now redirect to `/register?error=role_not_configured` instead of throwing an uncaught 500.
+- Added Playwright E2E harness:
+  - `playwright.config.ts` with local web server bootstrap (`npm run dev -- --port 3001`)
+  - `package.json` script: `test:e2e`
+  - `.gitignore` entries for `playwright-report` and `test-results`
+- Added auth/guard smoke specs in `tests/e2e/routes.spec.ts` covering:
+  - `/login` and `/register` field rendering and role selector options
+  - auth page cross-links
+  - unauthenticated redirects for `/`, `/dashboard`, `/dashboard/student`, `/dashboard/faculty`, `/dashboard/admin`
+  - direct `/forbidden` URL behavior (404, non-routable path)
+- Executed `npm run test:e2e`: 9 passed.
+- Updated registration server action in `app/(auth)/actions.ts`:
+  - Detects Supabase duplicate-email no-op signups (`identities` empty) and redirects with `email_in_use`.
+  - Uses idempotent `upsert` for `users`, `students`, and `faculty` profile provisioning.
+  - Redirects to `/login?registered=1` when signup does not return an immediate session; keeps `/dashboard` redirect when session exists.
+- Updated auth pages to surface status/error states:
+  - `app/(auth)/register/page.tsx` now renders explicit messages for register error query states.
+  - `app/(auth)/login/page.tsx` now renders login error states and a post-registration success banner.
+- Executed `npm run lint` and `npm run typecheck`: passed.
+- `npm run test:e2e` could not run in sandbox because Next dev server could not bind to port `3001` (`listen EPERM`).
+- Enhanced register failure diagnostics:
+  - `app/(auth)/actions.ts` now logs Supabase signup failures with `code/message/status`.
+  - Redirects now include `error_code` and `error_message` query params for `signup_failed`.
+  - `app/(auth)/register/page.tsx` now renders those diagnostic fields under the user-friendly error.
+- Executed `npm run lint` and `npm run typecheck`: passed.
+- Added new dashboard catalog route `app/(dashboard)/courses/page.tsx`:
+  - Fetches section rows from `sections` with joined `courses` and optional instructor name via `faculty -> users`.
+  - Computes enrolled counts and seats remaining from `enrollments` (`status = enrolled`).
+  - Groups results by course and renders responsive catalog UI.
+- Added reusable catalog UI components:
+  - `components/courses/CourseCatalog.tsx` for page layout, header, empty state, and course-level cards.
+  - `components/courses/SectionCard.tsx` for section timing, instructor, capacity, and seat availability.
+- Executed deliverable verification for:
+  - `app/(dashboard)/courses/page.tsx`
+  - `components/courses/CourseCatalog.tsx`
+  - `components/courses/SectionCard.tsx`
+- Added API endpoint `POST /api/enrollments` in `app/api/enrollments/route.ts` with:
+  - Authenticated student verification (`supabase.auth.getUser` + `students` profile lookup)
+  - Section existence check via `sections`
+  - Capacity check (`enrollments` count where `status = enrolled`)
+  - Existing enrollment check (returns `already_enrolled`)
+  - Schedule conflict detection against current `enrolled|completed` enrollments
+  - Prerequisite validation when a prerequisite schema is present (auto-detects one of: `course_prerequisites` table, `courses.prerequisite_course_id`, `courses.prerequisite_course_ids`)
+  - Re-enrollment path for previously dropped enrollment rows
+  - Machine-readable error responses including `section_full`, `schedule_conflict`, and `prerequisite_not_met`
+- Executed `npm run lint` and `npm run typecheck`: passed.
+- Added REST endpoint groups:
+  - `GET /api/courses` via `app/api/courses/route.ts`
+  - `GET /api/courses/[id]/sections` via `app/api/courses/[id]/sections/route.ts`
+  - `POST /api/enrollments` (refactored to shared validation/service) via `app/api/enrollments/route.ts`
+  - `GET /api/enrollments/my` via `app/api/enrollments/my/route.ts`
+- Added shared API helpers for consistent RBAC/errors/business logic:
+  - `lib/api/auth.ts` for authenticated/student context enforcement
+  - `lib/api/enrollments.ts` for reusable enrollment validation and insert/update flow
+  - `lib/api/http.ts` for consistent success/error JSON responses
+- Added Zod validation schemas in `lib/validations/enrollments.ts` for enrollment payload and course id param validation.
+- Installed dependency: `zod`.
+- Verified deliverables exist and executed `npm run lint` + `npm run typecheck`: passed.
+- Added migration `supabase/migrations/20260314125345_add_gradebook_tables.sql`:
+  - Created `gradebook_items` and `gradebook_scores` tables.
+  - Added relations:
+    - `gradebook_items.section_id -> sections.id`
+    - `gradebook_scores.item_id -> gradebook_items.id`
+    - `gradebook_scores.student_id -> students.id`
+  - Added unique constraint: `gradebook_scores(item_id, student_id)`.
+  - Added indexes and `updated_at` triggers for both new tables.
+  - Enabled RLS on both tables.
+  - Added policies so faculty can write/read scores for sections they teach and students can read their own scores.
+- Updated `doc/SCHEMA.md` with gradebook table definitions, migration history, and RLS policy coverage.
+- Fixed redirect-loop bug in `middleware.ts`:
+  - Previously, any authenticated session visiting `/login` or `/register` was forcibly redirected to `/dashboard`.
+  - `app/dashboard/layout.tsx` requires a valid app user/role and redirects missing-profile sessions back to `/login`, creating a loop.
+  - Middleware now redirects auth routes to `/dashboard` only when both `users.role_id` and mapped `roles.code` exist for the current auth user.
+- Executed `npm run lint` and `npm run typecheck`: passed.
+- Updated faculty gradebook page and UI workflow:
+  - `app/(dashboard)/faculty/sections/[sectionId]/gradebook/page.tsx` now includes explicit action area guidance and refined header copy.
+  - Rebuilt `components/gradebook/GradebookTable.tsx` to support:
+    - section selector + action controls
+    - responsive shadcn table matrix for enrolled students × gradebook items
+    - draft score editing across cells
+    - single-submit batch score API call with success/error feedback
+    - item creation form with labels and helper text (`title`, `maxPoints`, `dueAt`)
+  - Refactored `components/gradebook/ScoreInputCell.tsx` into a controlled input cell with inline validation.
+- Enhanced score API contract in `app/api/gradebook/scores/route.ts`:
+  - Supports both single-score payloads and batch payloads `{ scores: [...] }`.
+  - Reuses full ownership, enrollment, and max-score validation per score row.
+  - Returns normalized `scores` response array for UI refresh.
+- Updated `lib/validations/gradebook.ts`:
+  - Added coercion for numeric payload fields (`maxPoints`, `score`).
+  - Added `UpsertGradebookScoresBatchSchema` for batch score submission validation.
+- Replaced placeholder `doc/UI_GUIDELINES.md` content with concrete UI standards (layout, auth pages, spacing, typography).
+- Executed deliverable verification script for gradebook files.
+- Executed `npm run lint` and `npm run typecheck`: passed.

@@ -2,23 +2,26 @@
 
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { type AppRole, isAppRole } from "@/lib/auth/types";
+import type { SupabaseClient } from "@supabase/supabase-js";
 
 function getField(formData: FormData, key: string) {
   const value = formData.get(key);
   return typeof value === "string" ? value.trim() : "";
 }
 
-async function getRoleIdByCode(role: AppRole) {
-  const supabase = await createClient();
+type RoleLookupClient = SupabaseClient;
+
+async function getRoleIdByCode(supabase: RoleLookupClient, role: AppRole) {
   const { data, error } = await supabase
     .from("roles")
     .select("id")
     .eq("code", role)
-    .single<{ id: string }>();
+    .maybeSingle<{ id: string }>();
 
   if (error || !data?.id) {
-    throw new Error("Role is not configured.");
+    return null;
   }
 
   return data.id;
@@ -39,7 +42,6 @@ export async function registerAction(formData: FormData) {
   }
 
   const supabase = await createClient();
-  const roleId = await getRoleIdByCode(roleInput);
 
   const { data: authData, error: signUpError } = await supabase.auth.signUp({
     email,
@@ -50,27 +52,59 @@ export async function registerAction(formData: FormData) {
   });
 
   if (signUpError || !authData.user?.id) {
-    redirect("/register?error=signup_failed");
+    const errorCode = signUpError?.code ?? "unknown";
+    const errorMessage = signUpError?.message ?? "No user id returned from signup.";
+    console.error("registerAction: signup failed", {
+      code: errorCode,
+      message: errorMessage,
+      status: signUpError?.status,
+    });
+
+    const params = new URLSearchParams({
+      error: "signup_failed",
+      error_code: errorCode,
+      error_message: errorMessage,
+    });
+
+    redirect(`/register?${params.toString()}`);
   }
 
+  // Supabase can return a user-like payload for existing emails without creating a new account.
+  if (Array.isArray(authData.user.identities) && authData.user.identities.length === 0) {
+    redirect("/register?error=email_in_use");
+  }
+
+  const privilegedSupabase = createAdminClient();
+  const dbClient = privilegedSupabase ?? supabase;
+
+  const roleId = await getRoleIdByCode(dbClient, roleInput);
+  if (!roleId) {
+    redirect("/register?error=role_not_configured");
+  }
   const userId = authData.user.id;
 
-  const { error: userInsertError } = await supabase.from("users").insert({
-    id: userId,
-    role_id: roleId,
-    email,
-    full_name: fullName,
-  });
+  const { error: userInsertError } = await dbClient.from("users").upsert(
+    {
+      id: userId,
+      role_id: roleId,
+      email,
+      full_name: fullName,
+    },
+    { onConflict: "id" },
+  );
 
   if (userInsertError) {
     redirect("/register?error=user_profile_failed");
   }
 
   if (roleInput === "student") {
-    const { error } = await supabase.from("students").insert({
-      user_id: userId,
-      student_number: roleIdentifier("STU", userId),
-    });
+    const { error } = await dbClient.from("students").upsert(
+      {
+        user_id: userId,
+        student_number: roleIdentifier("STU", userId),
+      },
+      { onConflict: "user_id" },
+    );
 
     if (error) {
       redirect("/register?error=student_profile_failed");
@@ -78,17 +112,21 @@ export async function registerAction(formData: FormData) {
   }
 
   if (roleInput === "faculty") {
-    const { error } = await supabase.from("faculty").insert({
-      user_id: userId,
-      employee_number: roleIdentifier("FAC", userId),
-    });
+    const { error } = await dbClient.from("faculty").upsert(
+      {
+        user_id: userId,
+        employee_number: roleIdentifier("FAC", userId),
+      },
+      { onConflict: "user_id" },
+    );
 
     if (error) {
       redirect("/register?error=faculty_profile_failed");
     }
   }
 
-  redirect("/dashboard");
+  const hasSession = Boolean(authData.session);
+  redirect(hasSession ? "/dashboard" : "/login?registered=1");
 }
 
 export async function loginAction(formData: FormData) {

@@ -1,23 +1,22 @@
-Create doc/UI_GUIDELINES.md.
+# UI Guidelines
 
-Define the following UI standards:
+## Layout
+- Use a centered container layout for app pages.
+- Use `max-w-[1200px]` for dashboard content containers.
+- Use `max-w-[420px]` for auth form cards.
 
-Layout
-- Centered container
-- max width 420px for auth forms
+## Auth Pages
+- Build auth forms with shadcn/ui Card layout.
+- Include title and subtitle at the top of each auth card.
+- Every input must include a visible label.
+- Role selection must use a dropdown selector.
+- Primary action uses the default button style.
+- Secondary navigation links route between login/register.
 
-Auth pages
-- Card layout using shadcn/ui
-- Title + subtitle
-- Proper labels
-- role dropdown selector
-- primary submit button
-- secondary link to login/register
+## Spacing
+- Use `space-y-6` for form section spacing.
+- Keep card/content padding consistent across screens.
 
-Spacing
-- space-y-6 for form sections
-- consistent padding
-
-Typography
-- h1 page title
-- muted subtitle
+## Typography
+- Use `h1` for the page title.
+- Add muted subtitle/description text below headings.
