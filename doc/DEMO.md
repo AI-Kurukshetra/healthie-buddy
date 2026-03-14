@@ -4,10 +4,11 @@
 
 Record a short product demo that clearly shows:
 - role-aware authentication
+- student course enrollment
 - student academic visibility
 - faculty grading workflow
 - admin access boundaries
-- the enrollment business rules and current UI limitation
+- the enrollment business rules
 
 ## Demo Accounts
 
@@ -53,13 +54,13 @@ The app models a community-college SIS workflow:
 
 Important MVP note:
 - admin user-management CRUD is not implemented yet
-- student enrollment mutation exists in the backend, but there is no catalog-side enroll button in the current UI
 
 ## Seeded Demo Relationships
 
 - Faculty `ananya.iyer@demo-campus.edu` teaches:
   - `SPR26-A1` / `CSE101` / section id `00000000-0000-0000-0000-000000003101`
   - `SPR26-A7` / `DSA201` / section id `00000000-0000-0000-0000-000000003107`
+- Section `SPR26-A8` / id `00000000-0000-0000-0000-000000003108` belongs to another faculty member, not Ananya Iyer.
 - Student `aarav.sharma@demo-campus.edu` already has:
   - completed: `CSE101` (`SPR26-A1`)
   - completed: `PHY101` (`SPR26-A3`)
@@ -84,8 +85,11 @@ Say:
    - show weekly schedule
 4. Open `Courses` from the sidebar:
    - explain that the catalog shows course code, title, credits, section term, instructor, room, capacity, and seats remaining
-   - explicitly say this page is currently browse-only in the UI
+   - pick a section that is not already completed or enrolled
+   - click `Enroll` and wait for the success toast
+   - mention that the frontend is calling the existing enrollment API
 5. Open `Enrollments`:
+   - show that the newly enrolled section appears in the active list
    - show active vs completed sections
    - show credits attempted
 6. Open `Transcript`:
@@ -153,10 +157,11 @@ When a student enrolls, the system checks:
 5. prerequisites are met if a prerequisite model exists
 6. dropped enrollments are reactivated instead of duplicated
 
-Important current limitation:
-- the UI does not yet expose an `Enroll` button
-- for the video, describe the rule set while showing the `Courses` page
-- if you must demonstrate a live enrollment, use the optional API-assisted fallback below
+The course catalog now exposes student-side `Enroll` and `Re-enroll` actions in the section cards.
+
+Video note:
+- if you want a guaranteed success path for the seeded student, use a section that is not already attached to Aarav Sharma
+- keep the console fallback below only as a backup plan
 
 ## Optional API-Assisted Enrollment Demo
 
@@ -196,13 +201,12 @@ If `SPR26-A7` was already used earlier, switch to another safe section id such a
 ## Best Talking Points
 
 - "Authentication is role-aware, and the app redirects each user to the correct workspace."
-- "The student experience focuses on visibility: schedule, enrollments, transcript, and GPA."
+- "The student experience now covers both discovery and action: browse, enroll, then verify the enrollment and transcript."
 - "The faculty experience focuses on operational grading: sections, assessment setup, and score submission."
 - "The transcript is not hard-coded. It is derived from gradebook scores and mapped to GPA."
 - "Security is enforced at three layers: middleware, server-side role checks, and row-level security in Postgres."
-- "Enrollment business rules are already implemented, even though the current UI still needs the final enroll action surface."
+- "The student enrollment button uses the existing backend rules for capacity, conflicts, duplicates, and prerequisites."
 
 ## What Not To Overclaim
 
 - Do not present the current admin area as full user management. It is a protected placeholder route.
-- Do not say student enrollment is fully clickable in the UI. The mutation exists, but the catalog page is still read-only.

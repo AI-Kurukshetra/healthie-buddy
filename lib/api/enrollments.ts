@@ -47,12 +47,37 @@ type CoursePrereqRow = {
   prerequisite_course_id: string;
 };
 
-function isMissingRelationError(error: { code?: string } | null) {
+type QueryError = {
+  code?: string | null;
+  message?: string | null;
+  details?: string | null;
+  hint?: string | null;
+};
+
+export function isMissingSchemaObjectError(error: QueryError | null) {
   if (!error) {
     return false;
   }
 
-  return error.code === "42P01" || error.code === "42703";
+  // Supabase/PostgREST returns schema-cache miss codes instead of raw Postgres
+  // relation/column errors when optional prerequisite objects are absent.
+  if (
+    error.code === "42P01" ||
+    error.code === "42703" ||
+    error.code === "PGRST204" ||
+    error.code === "PGRST205"
+  ) {
+    return true;
+  }
+
+  const combined = `${error.message ?? ""} ${error.details ?? ""} ${error.hint ?? ""}`.toLowerCase();
+
+  return (
+    combined.includes("schema cache") ||
+    combined.includes("does not exist") ||
+    combined.includes("could not find the table") ||
+    combined.includes("could not find the column")
+  );
 }
 
 async function getPrerequisiteCourseIds(
@@ -72,7 +97,7 @@ async function getPrerequisiteCourseIds(
     return { ids, error: null };
   }
 
-  if (!isMissingRelationError(fromMapping.error)) {
+  if (!isMissingSchemaObjectError(fromMapping.error)) {
     return { ids: [], error: fromMapping.error.message };
   }
 
@@ -87,7 +112,7 @@ async function getPrerequisiteCourseIds(
     return { ids: prerequisiteId ? [prerequisiteId] : [], error: null };
   }
 
-  if (!isMissingRelationError(fromSingleColumn.error)) {
+  if (!isMissingSchemaObjectError(fromSingleColumn.error)) {
     return { ids: [], error: fromSingleColumn.error.message };
   }
 
@@ -101,7 +126,7 @@ async function getPrerequisiteCourseIds(
     return { ids: fromArrayColumn.data?.prerequisite_course_ids ?? [], error: null };
   }
 
-  if (!isMissingRelationError(fromArrayColumn.error)) {
+  if (!isMissingSchemaObjectError(fromArrayColumn.error)) {
     return { ids: [], error: fromArrayColumn.error.message };
   }
 

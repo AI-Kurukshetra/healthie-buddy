@@ -1,6 +1,11 @@
 # Changelog
 
 ## 2026-03-14
+- Added live student enrollment controls in the catalog via `components/courses/EnrollmentButton.tsx`, wired to `POST /api/enrollments` with loading, success, and error feedback.
+- Added shared catalog types in `components/courses/types.ts` and updated section cards/catalog messaging to surface enrollment status and actions.
+- Updated `app/(dashboard)/courses/page.tsx` to load the signed-in student’s current section enrollment states and enable enroll/re-enroll actions only for student accounts with valid profiles.
+- Updated `app/(dashboard)/faculty/sections/[sectionId]/gradebook/page.tsx` to redirect invalid or non-owned section URLs to the first section assigned to the signed-in faculty member.
+- Updated `doc/DEMO.md` to reflect live enrollment in the UI and to call out that section `00000000-0000-0000-0000-000000003108` is not taught by Ananya Iyer.
 - Added `doc/DEMO.md` with a full hackathon demo walkthrough, seeded account mapping, role-based talking points, and an API-assisted enrollment fallback path.
 - Fixed gradebook response validation to accept Supabase `numeric` values serialized as strings and `timestamptz` values with timezone offsets.
 - Added server-side logging for invalid gradebook response payloads in `app/api/sections/[sectionId]/gradebook/route.ts`.
@@ -362,3 +367,9 @@
 - Updated gradebook, enrollment, and dashboard API validation schemas to use the shared DB UUID validator instead of `z.string().uuid()`.
 - Added `tests/unit/identifierValidation.test.ts` covering seeded UUID acceptance, RFC UUID acceptance, and malformed ID rejection.
 - Updated `doc/SCHEMA.md`, `doc/TASKS.md`, `doc/PROGRESS.md`, and `doc/DECISIONS.md` for the demo-login repair.
+- Updated `components/courses/SectionCard.tsx` to use friendlier student-facing enrollment helper text instead of listing backend validation rules verbatim.
+- Updated `lib/api/enrollments.ts` to treat Supabase/PostgREST schema-cache miss errors (`PGRST204` / `PGRST205`) as optional prerequisite-schema fallbacks, preventing false `prerequisite_check_failed` responses when no prerequisite table or columns are configured.
+- Added `tests/unit/enrollment/prerequisiteFallback.test.ts` covering the missing-table, missing-column, and unrelated-error cases for prerequisite fallback handling.
+- Added `supabase/migrations/20260314184725_add_faculty_student_roster_policies.sql` so faculty can read student roster profile data (`students` + `users`) for sections they teach under RLS, which unblocks faculty gradebook roster queries after live student enrollments.
+- Added `supabase/migrations/20260314191519_fix_faculty_roster_policies_without_recursive_rls.sql` to replace the prior roster RLS implementation with security-definer helper functions, avoiding recursive policy evaluation that could break faculty session role lookup after login.
+- Updated `lib/auth/server.ts` and `middleware.ts` to log `users` / `roles` lookup errors during session and route-role resolution, so future RLS regressions surface in server logs instead of appearing as a silent return to `/login`.

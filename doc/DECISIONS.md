@@ -129,6 +129,30 @@ Format:
   Rationale: Supabase commonly serializes `numeric` columns as strings and timestamp columns with timezone offsets like `+00:00`, while strict Zod `number()` and `datetime()` validation rejects those otherwise valid API payloads.
   Impact: `lib/validations/api-contracts.ts` now coerces numeric response fields and accepts offset timestamps, preventing false `invalid_response` failures on faculty gradebook and similar endpoints.
 
-- [2026-03-14] Decision: Use a UI-first demo flow and treat enrollment as an API-assisted fallback until the catalog exposes an enroll action.
-  Rationale: Enrollment business rules are implemented server-side, but the current course catalog remains read-only in the UI; the demo should stay accurate without overstating available interactions.
-  Impact: `doc/DEMO.md` positions student browsing, transcript visibility, and faculty grading as the primary live demo path, with optional console-based enrollment only when needed.
+- [2026-03-14] Decision: Use a UI-first demo flow with catalog enrollment as the primary student action and keep the API call only as a fallback.
+  Rationale: The catalog now exposes the enrollment mutation directly in the UI, but a console fallback is still useful during demos if a specific seeded scenario needs to be forced quickly.
+  Impact: `doc/DEMO.md` now leads with click-through student enrollment and keeps the API-assisted path only as a backup option.
+
+- [2026-03-14] Decision: Implement student enrollment directly in the course catalog by calling the existing enrollment API from section cards.
+  Rationale: The backend mutation and validation rules were already in place, so the missing piece was a thin frontend action surface rather than a new server pathway.
+  Impact: Students can now enroll or re-enroll from `/courses`, and the catalog refreshes with updated seat counts and enrollment state after the mutation.
+
+- [2026-03-14] Decision: Redirect faculty gradebook URLs that reference non-owned sections back to the first valid section for the signed-in faculty user.
+  Rationale: Seeded section ids can be typed or linked incorrectly, and silently showing a different section under the wrong URL is misleading during demos and debugging.
+  Impact: Visiting a route like `/faculty/sections/00000000-0000-0000-0000-000000003108/gradebook` while signed in as Ananya Iyer now normalizes to one of her actual sections instead of leaving the mismatched URL in place.
+
+- [2026-03-14] Decision: Use plain-language helper copy for student enrollment cards instead of enumerating backend validation rules.
+  Rationale: The enrollment UI should reassure students about what happens next without exposing technical implementation detail.
+  Impact: Student-facing course cards now describe enrollment checks in simpler language while leaving the underlying validation logic unchanged.
+
+- [2026-03-14] Decision: Treat missing prerequisite tables or columns as "no prerequisites configured" instead of failing enrollment.
+  Rationale: The current MVP schema does not require prerequisite tables/columns, and Supabase surfaces missing optional schema objects as PostgREST schema-cache errors rather than business-rule failures.
+  Impact: Students can enroll in courses without configured prerequisite metadata, while real permission or database errors still surface normally.
+
+- [2026-03-14] Decision: Expose only taught-section student profile data to faculty through targeted RLS policies instead of bypassing roster reads with a service-role client.
+  Rationale: Faculty gradebooks need student names, emails, and student numbers for roster scoring, and those reads should stay under least-privilege RLS rather than broad server-side bypass access.
+  Impact: Faculty can now resolve `enrollments -> students -> users` only for rosters in sections they teach, while unrelated student profile rows remain hidden.
+
+- [2026-03-14] Decision: Implement faculty roster RLS checks through security-definer helper functions instead of direct policy subqueries across `users`, `students`, and `enrollments`.
+  Rationale: Direct cross-table policy subqueries can recurse through other RLS-protected relations and break unrelated flows like post-login role lookup.
+  Impact: Faculty roster reads remain least-privilege, but the auth redirect path no longer depends on recursively evaluating roster policies.

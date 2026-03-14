@@ -1,4 +1,4 @@
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import type { Metadata } from "next";
 import { requireRole } from "@/lib/auth/server";
 import { createClient } from "@/lib/supabase/server";
@@ -96,7 +96,9 @@ export default async function FacultyGradebookPage({ params }: PageProps) {
     );
   }
 
-  const activeSectionId = sections.some((section) => section.id === sectionId) ? sectionId : sections[0].id;
+  if (!sections.some((section) => section.id === sectionId)) {
+    redirect(`/faculty/sections/${sections[0].id}/gradebook`);
+  }
 
   return (
     <section className="space-y-8">
@@ -126,7 +128,7 @@ export default async function FacultyGradebookPage({ params }: PageProps) {
         </CardContent>
       </Card>
 
-      <GradebookTable sectionOptions={sections} currentSectionId={activeSectionId} />
+      <GradebookTable sectionOptions={sections} currentSectionId={sectionId} />
     </section>
   );
 }

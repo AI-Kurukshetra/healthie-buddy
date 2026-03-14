@@ -138,17 +138,28 @@
   - Normalizes SQL-seeded demo `auth.users` rows used by the hackathon dataset
   - Reasserts email-provider auth metadata and confirmed-email fields for `@demo-campus.edu` accounts
   - Fills auth token columns with empty-string defaults when those columns exist in the current Supabase auth schema, avoiding password-login failures caused by null auth fields
+- `20260314184725_add_faculty_student_roster_policies.sql`
+  - Adds faculty-select RLS coverage for `students` rows tied to sections they teach
+  - Adds faculty-select RLS coverage for `users` rows belonging to students enrolled or completed in sections they teach
+  - Unblocks faculty gradebook roster queries that join `enrollments -> students -> users`
+- `20260314191519_fix_faculty_roster_policies_without_recursive_rls.sql`
+  - Replaces the direct roster policies from `20260314184725_add_faculty_student_roster_policies.sql` with `SECURITY DEFINER` helper functions
+  - Preserves faculty roster visibility for taught sections without recursive RLS evaluation through `users -> enrollments -> students`
+  - Keeps faculty access least-privilege and restores post-login role resolution for faculty accounts
 
 ## RLS Policy Log
 - RLS enabled on all core tables:
   - `roles`, `users`, `students`, `faculty`, `courses`, `sections`, `enrollments`, `grades`, `transcripts`, `gradebook_items`, `gradebook_scores`
 - Key policies:
   - `roles`: authenticated users can read roles
-  - `users`: users can select/update/insert only their own record
-  - `students` and `faculty`: own-profile read/update/insert only (role-aware insert checks)
+  - `users`: users can select/update/insert only their own record; faculty can also read app-user rows for students in their taught sections
+  - `students` and `faculty`: own-profile read/update/insert only, with faculty additionally allowed to read student profiles for their taught-section rosters
   - `courses` and `sections`: authenticated read access
   - `enrollments`: students can manage their own enrollments; faculty can read enrollments for their sections
   - `grades`: faculty can read/write grades for sections they teach; students can read their own grades
   - `transcripts`: students can read own transcripts; faculty can read transcript rows tied to their taught sections
   - `gradebook_items`: authenticated read; faculty can insert/update/delete items for their own sections
   - `gradebook_scores`: faculty can insert/update/delete/read scores for their own sections; students can read only their own scores
+- Helper functions:
+  - `public.auth_user_teaches_student(uuid)`: security-definer roster check used by `students` select policy
+  - `public.auth_user_teaches_app_user(uuid)`: security-definer roster check used by `users` select policy

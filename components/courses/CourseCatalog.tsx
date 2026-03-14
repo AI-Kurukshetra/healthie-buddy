@@ -2,24 +2,20 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { AppLink } from "@/components/ui/app-link";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
-import { SectionCard, type SectionView } from "@/components/courses/SectionCard";
-
-export type CourseCatalogItem = {
-  id: string;
-  code: string;
-  title: string;
-  credits: number;
-  sections: SectionView[];
-};
+import type { AppRole } from "@/lib/auth/types";
+import { SectionCard } from "@/components/courses/SectionCard";
+import type { CourseCatalogItem } from "@/components/courses/types";
 
 type CourseCatalogProps = {
   homeHref: string;
   homeLabel: string;
   userName: string;
   courses: CourseCatalogItem[];
+  viewerRole: AppRole;
+  canEnroll: boolean;
 };
 
-export function CourseCatalog({ homeHref, homeLabel, userName, courses }: CourseCatalogProps) {
+export function CourseCatalog({ homeHref, homeLabel, userName, courses, viewerRole, canEnroll }: CourseCatalogProps) {
   return (
     <div className="space-y-8">
       <header className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
@@ -38,6 +34,26 @@ export function CourseCatalog({ homeHref, homeLabel, userName, courses }: Course
           </AppLink>
         </div>
       </header>
+
+      {viewerRole === "student" ? (
+        <Card>
+          <CardContent className="flex flex-col gap-2 p-5 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <p className="text-sm font-semibold text-slate-950">
+                {canEnroll
+                  ? "Live student enrollment is now available from each section card."
+                  : "Enrollment actions are unavailable until your student profile is restored."}
+              </p>
+              <p className="text-sm text-slate-500">
+                {canEnroll
+                  ? "The frontend uses the existing enrollment API and enforces capacity, conflict, duplicate, and prerequisite rules."
+                  : "You can still browse the catalog, but enrollment requires a valid student record."}
+              </p>
+            </div>
+            <Badge variant="secondary">Student Action</Badge>
+          </CardContent>
+        </Card>
+      ) : null}
 
       <section className="space-y-6">
         {courses.length === 0 ? (

@@ -23,21 +23,44 @@ export async function getSessionUser(): Promise<SessionUser | null> {
     return null;
   }
 
-  const { data: userRow } = await supabase
+  const { data: userRow, error: userError } = await supabase
     .from("users")
     .select("id,email,full_name,role_id")
     .eq("id", user.id)
     .maybeSingle<UserRow>();
 
+  if (userError) {
+    console.error("getSessionUser: users lookup failed", {
+      code: userError.code,
+      message: userError.message,
+      details: userError.details,
+      hint: userError.hint,
+      userId: user.id,
+    });
+    return null;
+  }
+
   if (!userRow) {
     return null;
   }
 
-  const { data: roleRow } = await supabase
+  const { data: roleRow, error: roleError } = await supabase
     .from("roles")
     .select("code")
     .eq("id", userRow.role_id)
     .maybeSingle<RoleRow>();
+
+  if (roleError) {
+    console.error("getSessionUser: roles lookup failed", {
+      code: roleError.code,
+      message: roleError.message,
+      details: roleError.details,
+      hint: roleError.hint,
+      userId: user.id,
+      roleId: userRow.role_id,
+    });
+    return null;
+  }
 
   if (!roleRow?.code || !isAppRole(roleRow.code)) {
     return null;

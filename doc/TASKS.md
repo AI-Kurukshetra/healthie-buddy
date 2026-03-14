@@ -37,6 +37,9 @@ Legend: `[ ]` todo, `[~]` in-progress, `[x]` done, `[!]` blocked
 - [x] (2026-03-14 10:51 IST) Implement course catalog browsing with section timing/capacity metadata.
 - [x] (2026-03-14 12:37 IST) Implement enrollment flow with prerequisite and schedule conflict checks.
 - [x] (2026-03-14 12:49 IST) Implement endpoint groups for `/courses` and `/enrollments`.
+- [x] (2026-03-14 18:34 IST) Implement student enrollment mutation in the course catalog frontend using the existing enrollment API.
+- [x] (2026-03-14 18:41 IST) Replace technical enrollment helper copy with user-friendly messaging on student section cards.
+- [x] (2026-03-14 18:44 IST) Fix enrollment prerequisite lookup fallback so missing prerequisite schema objects do not block valid student enrollments.
 - [x] (2026-03-14 17:24 IST) Add unit tests for enrollment conflict-check logic.
 
 ### M3 – Academic records + dashboards
@@ -44,8 +47,11 @@ Legend: `[ ]` todo, `[~]` in-progress, `[x]` done, `[!]` blocked
 - [x] (2026-03-14 10:37 IST) Write migration + RLS policies for grades/transcript visibility.
 - [x] (2026-03-14 12:53 IST) Introduce gradebook schema (`gradebook_items`, `gradebook_scores`) with RLS policies.
 - [x] (2026-03-14 14:08 IST) Faculty gradebook entry and submission workflow.
+- [x] (2026-03-14 18:34 IST) Redirect invalid faculty gradebook section URLs to the first section owned by the signed-in faculty member.
 - [x] (2026-03-14 17:09 IST) Fix gradebook/API UUID validation to accept deterministic seeded Postgres UUIDs.
 - [x] (2026-03-14 18:02 IST) Fix faculty gradebook response validation for Supabase numeric and timestamptz payloads.
+- [x] (2026-03-14 18:47 IST) Add RLS policies so faculty gradebooks can read student roster profile data for their own sections.
+- [x] (2026-03-14 19:15 IST) Replace recursive faculty roster RLS with security-definer helper functions so faculty login and gradebook access both work.
 - [x] (2026-03-14 14:25 IST) Student transcript view with GPA calculation.
 - [x] (2026-03-14 14:25 IST) Build lightweight student dashboard (enrolled courses + GPA snapshot).
 - [x] (2026-03-14 14:35 IST) Build lightweight faculty dashboard (assigned sections + grading queue).
