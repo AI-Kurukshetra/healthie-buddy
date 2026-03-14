@@ -1,5 +1,5 @@
-import Link from "next/link";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { AppLink } from "@/components/ui/app-link";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -46,12 +46,12 @@ export function GradingQueue({ sections }: GradingQueueProps) {
                 </div>
 
                 <div className="mt-3">
-                  <Link
+                  <AppLink
                     className={buttonVariants({ size: "sm", variant: "outline" })}
                     href={`/faculty/sections/${section.sectionId}/gradebook`}
                   >
                     Continue Grading
-                  </Link>
+                  </AppLink>
                 </div>
               </div>
             ))}

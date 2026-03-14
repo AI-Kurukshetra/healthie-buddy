@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { requireRole } from "@/lib/auth/server";
 import { createClient } from "@/lib/supabase/server";
 import { getStudentTranscriptAggregate } from "@/lib/api/transcripts";
+import { AppLink } from "@/components/ui/app-link";
 import { GpaSummaryCard } from "@/components/transcript/GpaSummaryCard";
 import { TranscriptTable } from "@/components/transcript/TranscriptTable";
 import { Badge } from "@/components/ui/badge";
@@ -66,12 +66,12 @@ export default async function StudentTranscriptPage() {
           </div>
         </div>
         <div className="flex flex-wrap gap-3">
-          <Link className={buttonVariants({ variant: "outline" })} href="/student">
+          <AppLink className={buttonVariants({ variant: "outline" })} href="/student">
             Dashboard
-          </Link>
-          <Link className={buttonVariants({ variant: "secondary" })} href="/courses">
+          </AppLink>
+          <AppLink className={buttonVariants({ variant: "secondary" })} href="/courses">
             Browse Courses
-          </Link>
+          </AppLink>
         </div>
       </header>
 

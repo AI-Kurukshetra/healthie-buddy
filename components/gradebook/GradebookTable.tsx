@@ -2,12 +2,17 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useNavigationProgress } from "@/components/layout/navigation-progress";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { LoadingCard } from "@/components/ui/loading-card";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
+import { LoadingTable } from "@/components/ui/loading-table";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { useToast } from "@/components/ui/toast";
 import { ScoreInputCell } from "@/components/gradebook/ScoreInputCell";
 
 type SectionOption = {
@@ -70,6 +75,8 @@ function keyFor(itemId: string, studentId: string) {
 
 export function GradebookTable({ sectionOptions, currentSectionId }: GradebookTableProps) {
   const router = useRouter();
+  const { startNavigation } = useNavigationProgress();
+  const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmittingScores, setIsSubmittingScores] = useState(false);
   const [isCreatingItem, setIsCreatingItem] = useState(false);
@@ -136,6 +143,7 @@ export function GradebookTable({ sectionOptions, currentSectionId }: GradebookTa
       return;
     }
 
+    startNavigation();
     router.push(`/faculty/sections/${nextSectionId}/gradebook`);
   }
 
@@ -143,12 +151,16 @@ export function GradebookTable({ sectionOptions, currentSectionId }: GradebookTa
     const maxPoints = Number(itemMaxPoints);
 
     if (!itemTitle.trim()) {
-      setError("Item title is required.");
+      const message = "Item title is required.";
+      setError(message);
+      toast({ title: "Gradebook item not created", description: message, variant: "destructive" });
       return;
     }
 
     if (!Number.isFinite(maxPoints) || maxPoints <= 0) {
-      setError("Max points must be a positive number.");
+      const message = "Max points must be a positive number.";
+      setError(message);
+      toast({ title: "Gradebook item not created", description: message, variant: "destructive" });
       return;
     }
 
@@ -171,14 +183,18 @@ export function GradebookTable({ sectionOptions, currentSectionId }: GradebookTa
     setIsCreatingItem(false);
 
     if (!response.ok) {
-      setError(payload?.message ?? "Could not create gradebook item.");
+      const message = payload?.message ?? "Could not create gradebook item.";
+      setError(message);
+      toast({ title: "Gradebook item not created", description: message, variant: "destructive" });
       return;
     }
 
     setItemTitle("");
     setItemMaxPoints("100");
     setItemDueAt("");
-    setSuccess("Gradebook item created.");
+    const message = "Gradebook item created.";
+    setSuccess(message);
+    toast({ title: "Item created", description: "The new assessment is now available in the matrix.", variant: "success" });
     await loadGradebook();
   }
 
@@ -199,7 +215,9 @@ export function GradebookTable({ sectionOptions, currentSectionId }: GradebookTa
 
   async function handleSubmitScores() {
     if (!data || pendingDraftKeys.length === 0) {
-      setSuccess("No score changes to submit.");
+      const message = "No score changes to submit.";
+      setSuccess(message);
+      toast({ title: "Nothing to save", description: message });
       return;
     }
 
@@ -210,7 +228,9 @@ export function GradebookTable({ sectionOptions, currentSectionId }: GradebookTa
 
     const hasEmptyDraft = payloadScores.some((entry) => entry.score === null);
     if (hasEmptyDraft) {
-      setError("Empty score cells cannot be submitted. Enter a valid score for each changed cell.");
+      const message = "Empty score cells cannot be submitted. Enter a valid score for each changed cell.";
+      setError(message);
+      toast({ title: "Scores not submitted", description: message, variant: "destructive" });
       return;
     }
 
@@ -234,13 +254,23 @@ export function GradebookTable({ sectionOptions, currentSectionId }: GradebookTa
     setIsSubmittingScores(false);
 
     if (!response.ok) {
-      setError(payload?.message ?? "Could not submit scores.");
+      const message = payload?.message ?? "Could not submit scores.";
+      setError(message);
+      toast({ title: "Scores not submitted", description: message, variant: "destructive" });
       return;
     }
 
-    setSuccess(`Submitted ${payloadScores.length} score update${payloadScores.length > 1 ? "s" : ""}.`);
+    const message = `Submitted ${payloadScores.length} score update${payloadScores.length > 1 ? "s" : ""}.`;
+    setSuccess(message);
+    toast({
+      title: "Scores saved",
+      description: `${payloadScores.length} gradebook cell${payloadScores.length > 1 ? "s were" : " was"} updated successfully.`,
+      variant: "success",
+    });
     await loadGradebook();
   }
+
+  const tableColumnCount = Math.max((data?.items.length ?? 0) + 1, 4);
 
   return (
     <div className="space-y-6">
@@ -253,6 +283,7 @@ export function GradebookTable({ sectionOptions, currentSectionId }: GradebookTa
           <div className="space-y-2">
             <Label htmlFor="sectionSelect">Section</Label>
             <Select
+              disabled={isLoading || isSubmittingScores || isCreatingItem}
               id="sectionSelect"
               name="sectionSelect"
               value={currentSectionId}
@@ -274,12 +305,19 @@ export function GradebookTable({ sectionOptions, currentSectionId }: GradebookTa
               onClick={handleSubmitScores}
               variant="secondary"
             >
-              {isSubmittingScores ? "Submitting..." : `Submit Scores (${pendingDraftKeys.length})`}
+              {isSubmittingScores ? (
+                <>
+                  <LoadingSpinner className="h-4 w-4" />
+                  <span>Submitting...</span>
+                </>
+              ) : (
+                `Submit Scores (${pendingDraftKeys.length})`
+              )}
             </Button>
             <Button
               type="button"
               className="w-auto"
-              disabled={isLoading}
+              disabled={isLoading || isSubmittingScores || isCreatingItem}
               onClick={() => {
                 setDraftScores({});
                 setError(null);
@@ -294,10 +332,14 @@ export function GradebookTable({ sectionOptions, currentSectionId }: GradebookTa
       </Card>
 
       {error ? (
-        <p className="rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p>
+        <p aria-live="polite" className="rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+          {error}
+        </p>
       ) : null}
       {success ? (
-        <p className="rounded-md border border-green-200 bg-green-50 px-3 py-2 text-sm text-green-700">{success}</p>
+        <p aria-live="polite" className="rounded-md border border-green-200 bg-green-50 px-3 py-2 text-sm text-green-700">
+          {success}
+        </p>
       ) : null}
 
       <div className="grid gap-6 lg:grid-cols-[minmax(0,2fr)_minmax(280px,1fr)]">
@@ -312,7 +354,13 @@ export function GradebookTable({ sectionOptions, currentSectionId }: GradebookTa
           </CardHeader>
           <CardContent>
             {isLoading ? (
-              <p className="text-sm text-gray-600">Loading enrolled students and gradebook items...</p>
+              <div className="space-y-4">
+                <div className="flex items-center gap-2 text-sm text-slate-500">
+                  <LoadingSpinner className="h-4 w-4 text-teal-600" />
+                  <span>Loading enrolled students and gradebook items...</span>
+                </div>
+                <LoadingTable columns={tableColumnCount} rows={5} />
+              </div>
             ) : !data || data.items.length === 0 ? (
               <p className="text-sm text-gray-600">No gradebook items yet. Create an item to begin score entry.</p>
             ) : data.students.length === 0 ? (
@@ -347,10 +395,10 @@ export function GradebookTable({ sectionOptions, currentSectionId }: GradebookTa
                           return (
                             <TableCell key={scoreKey}>
                               <ScoreInputCell
+                                disabled={isSubmittingScores || isCreatingItem}
                                 score={getVisibleScore(item.id, student.id)}
                                 maxPoints={item.maxPoints}
                                 label={`score-${item.id}-${student.id}`}
-                                disabled={isSubmittingScores}
                                 onChange={(nextScore) => handleDraftScoreChange(item.id, student.id, nextScore)}
                               />
                             </TableCell>
@@ -371,39 +419,66 @@ export function GradebookTable({ sectionOptions, currentSectionId }: GradebookTa
             <CardDescription>Create assignments, quizzes, or exams for this section.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
-            <div className="space-y-2">
-              <Label htmlFor="itemTitle">Item Title</Label>
-              <Input
-                id="itemTitle"
-                value={itemTitle}
-                onChange={(event) => setItemTitle(event.target.value)}
-                placeholder="Assignment 1"
-              />
-              <p className="text-xs text-gray-600">Use clear titles so students can identify each assessment.</p>
-            </div>
+            {isLoading ? (
+              <div className="space-y-4">
+                <div className="flex items-center gap-2 text-sm text-slate-500">
+                  <LoadingSpinner className="h-4 w-4 text-teal-600" />
+                  <span>Preparing assessment controls...</span>
+                </div>
+                <LoadingCard className="border-0 bg-transparent shadow-none" lines={5} showHeader={false} />
+              </div>
+            ) : (
+              <>
+                <div className="space-y-2">
+                  <Label htmlFor="itemTitle">Item Title</Label>
+                  <Input
+                    disabled={isCreatingItem || isSubmittingScores}
+                    id="itemTitle"
+                    value={itemTitle}
+                    onChange={(event) => setItemTitle(event.target.value)}
+                    placeholder="Assignment 1"
+                  />
+                  <p className="text-xs text-gray-600">Use clear titles so students can identify each assessment.</p>
+                </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="itemMaxPoints">Maximum Points</Label>
-              <Input
-                id="itemMaxPoints"
-                type="number"
-                min={1}
-                step="0.01"
-                value={itemMaxPoints}
-                onChange={(event) => setItemMaxPoints(event.target.value)}
-              />
-              <p className="text-xs text-gray-600">Scores entered in the matrix must stay within this limit.</p>
-            </div>
+                <div className="space-y-2">
+                  <Label htmlFor="itemMaxPoints">Maximum Points</Label>
+                  <Input
+                    disabled={isCreatingItem || isSubmittingScores}
+                    id="itemMaxPoints"
+                    type="number"
+                    min={1}
+                    step="0.01"
+                    value={itemMaxPoints}
+                    onChange={(event) => setItemMaxPoints(event.target.value)}
+                  />
+                  <p className="text-xs text-gray-600">Scores entered in the matrix must stay within this limit.</p>
+                </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="itemDueAt">Due Date (optional)</Label>
-              <Input id="itemDueAt" type="datetime-local" value={itemDueAt} onChange={(event) => setItemDueAt(event.target.value)} />
-              <p className="text-xs text-gray-600">Set a due date to organize grading order.</p>
-            </div>
+                <div className="space-y-2">
+                  <Label htmlFor="itemDueAt">Due Date (optional)</Label>
+                  <Input
+                    disabled={isCreatingItem || isSubmittingScores}
+                    id="itemDueAt"
+                    type="datetime-local"
+                    value={itemDueAt}
+                    onChange={(event) => setItemDueAt(event.target.value)}
+                  />
+                  <p className="text-xs text-gray-600">Set a due date to organize grading order.</p>
+                </div>
 
-            <Button type="button" disabled={isCreatingItem || isLoading} onClick={handleCreateItem}>
-              {isCreatingItem ? "Creating..." : "Create Item"}
-            </Button>
+                <Button type="button" disabled={isCreatingItem || isLoading || isSubmittingScores} onClick={handleCreateItem}>
+                  {isCreatingItem ? (
+                    <>
+                      <LoadingSpinner className="h-4 w-4" />
+                      <span>Creating...</span>
+                    </>
+                  ) : (
+                    "Create Item"
+                  )}
+                </Button>
+              </>
+            )}
           </CardContent>
         </Card>
       </div>

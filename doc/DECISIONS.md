@@ -116,3 +116,7 @@ Format:
 - [2026-03-14] Decision: Normalize in-scope API responses to documented camelCase contracts and validate them at route boundaries.
   Rationale: Raw Supabase row shapes were inconsistent across endpoints and left some routes without response-level contract enforcement, which weakens architecture consistency and makes external evaluation harder.
   Impact: Added `lib/validations/api-contracts.ts`, validated catalog/enrollment/gradebook responses, normalized enrollment and gradebook score payloads, and aligned `README.md` plus `doc/API.md` with the emitted JSON shapes.
+
+- [2026-03-14] Decision: Centralize loading and navigation feedback with shared client primitives instead of page-specific spinners.
+  Rationale: Auth submits, shell navigation, and gradebook mutations all needed visible progress, and ad hoc indicators would drift quickly across routes.
+  Impact: Added shared skeleton/spinner/loading components, a global navigation-progress provider, a toast provider, and reusable form-pending buttons; auth and dashboard pages now reuse the same feedback system.

@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { IBM_Plex_Mono, Space_Grotesk } from "next/font/google";
+import { NavigationProgressProvider } from "@/components/layout/navigation-progress";
+import { ToastProvider } from "@/components/ui/toast";
 import "./globals.css";
 
 const sansFont = Space_Grotesk({
@@ -26,7 +28,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${sansFont.variable} ${monoFont.variable} min-h-screen antialiased`}>
-        {children}
+        <NavigationProgressProvider>
+          <ToastProvider>{children}</ToastProvider>
+        </NavigationProgressProvider>
       </body>
     </html>
   );

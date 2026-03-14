@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { AppLink } from "@/components/ui/app-link";
 
 export default function ForbiddenPage() {
   return (
@@ -7,9 +7,9 @@ export default function ForbiddenPage() {
       <p className="mt-2 text-sm text-gray-600">
         You do not have permission to access this resource.
       </p>
-      <Link href="/" className="mt-6 rounded-md border px-4 py-2 text-sm">
+      <AppLink href="/" className="mt-6 rounded-md border px-4 py-2 text-sm">
         Back to dashboard
-      </Link>
+      </AppLink>
     </main>
   );
 }

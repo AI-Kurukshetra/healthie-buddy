@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { requireRole } from "@/lib/auth/server";
 import { createClient } from "@/lib/supabase/server";
+import { AppLink } from "@/components/ui/app-link";
 import { FacultySections, type FacultySectionView } from "@/components/dashboard/FacultySections";
 import { GradingQueue } from "@/components/dashboard/GradingQueue";
 import { Badge } from "@/components/ui/badge";
@@ -206,12 +206,12 @@ export default async function FacultyDashboardPage() {
           </div>
         </div>
         <div className="flex flex-wrap gap-3">
-          <Link className={buttonVariants({ variant: "outline" })} href="/faculty/sections">
+          <AppLink className={buttonVariants({ variant: "outline" })} href="/faculty/sections">
             View Sections
-          </Link>
-          <Link className={buttonVariants({ variant: "secondary" })} href="/faculty/gradebook">
+          </AppLink>
+          <AppLink className={buttonVariants({ variant: "secondary" })} href="/faculty/gradebook">
             Open Gradebook
-          </Link>
+          </AppLink>
         </div>
       </header>
 

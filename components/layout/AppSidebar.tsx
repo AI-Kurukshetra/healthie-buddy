@@ -1,10 +1,9 @@
 "use client";
-
-import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import type { SessionUser } from "@/lib/auth/types";
 import { Button, buttonVariants } from "@/components/ui/button";
+import { AppLink } from "@/components/ui/app-link";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import type { AppNavItem } from "@/components/layout/navigation";
@@ -86,7 +85,7 @@ export function AppSidebar({ navigation, user }: AppSidebarProps) {
               const isActive = isNavItemActive(pathname, item);
 
               return (
-                <Link
+                <AppLink
                   key={item.href}
                   className={buttonVariants({
                     className: cn(
@@ -100,7 +99,7 @@ export function AppSidebar({ navigation, user }: AppSidebarProps) {
                 >
                   <SidebarDot active={isActive} />
                   {item.label}
-                </Link>
+                </AppLink>
               );
             })}
           </nav>

@@ -278,6 +278,30 @@
 - Added `tests/unit/authActions.test.ts` covering invalid auth-form redirects and logout sign-out behavior.
 - Executed `npm run lint`, `npm run typecheck`, and `npm test`: passed (`7` files, `22` tests).
 - `$pr-review` audit completed: no unresolved high-severity findings remain; residual risk is limited to smoke-level E2E coverage for seeded login/logout and full role journeys.
+- Added reusable loading and feedback primitives:
+  - `components/ui/skeleton.tsx`
+  - `components/ui/loading-spinner.tsx`
+  - `components/ui/loading-card.tsx`
+  - `components/ui/loading-table.tsx`
+  - `components/ui/form-submit-button.tsx`
+  - `components/ui/toast.tsx`
+  - `components/ui/app-link.tsx`
+  - `components/layout/navigation-progress.tsx`
+  - `components/layout/LogoutMenuItem.tsx`
+- Added route-group loading fallbacks:
+  - `app/(auth)/loading.tsx`
+  - `app/(dashboard)/loading.tsx`
+- Updated root layout to mount:
+  - top navigation progress indicator
+  - global toast provider
+- Updated auth forms, logout, and admin action checks to show disabled pending states with inline spinners via `useFormStatus`.
+- Updated shared in-app links to use the progress-aware `AppLink` wrapper so route transitions surface immediate top-bar feedback.
+- Updated `components/gradebook/GradebookTable.tsx` to:
+  - show skeleton table/loading card placeholders during client-side fetches
+  - disable controls during create/save operations
+  - render spinner labels during score/item submissions
+  - emit toast feedback for gradebook success/error outcomes
+- Re-ran `npm run lint`, `npm run typecheck`, and `npm test`: passed.
   - redirect authenticated users away from `/login|/register` to role-specific home paths.
 - Fixed Next 15 route handler type signatures in:
   - `app/api/courses/[id]/sections/route.ts`

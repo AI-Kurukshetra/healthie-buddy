@@ -1,6 +1,6 @@
-import Link from "next/link";
 import type { Metadata } from "next";
 import { requireRole } from "@/lib/auth/server";
+import { AppLink } from "@/components/ui/app-link";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -25,9 +25,9 @@ export default async function AdminUsersPage() {
             </p>
           </div>
         </div>
-        <Link className={buttonVariants({ variant: "outline" })} href="/admin">
+        <AppLink className={buttonVariants({ variant: "outline" })} href="/admin">
           Back to Admin Dashboard
-        </Link>
+        </AppLink>
       </header>
 
       <Card>

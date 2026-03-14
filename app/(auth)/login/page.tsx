@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { loginAction } from "../actions";
 import {
   Card,
@@ -7,10 +6,11 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { AppLink } from "@/components/ui/app-link";
+import { FormSubmitButton } from "@/components/ui/form-submit-button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
 
 const LOGIN_ERROR_MESSAGE: Record<string, string> = {
   invalid_input: "Please enter your email and password.",
@@ -74,16 +74,16 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
               </Select>
             </div>
 
-            <Button className="w-full" type="submit">
+            <FormSubmitButton className="w-full" pendingLabel="Signing In...">
               Sign In
-            </Button>
+            </FormSubmitButton>
           </form>
 
           <p className="mt-6 text-sm text-gray-600">
             New user?{" "}
-            <Link href="/register" className="font-medium text-black underline">
+            <AppLink href="/register" className="font-medium text-black underline">
               Create account
-            </Link>
+            </AppLink>
           </p>
         </CardContent>
       </Card>
