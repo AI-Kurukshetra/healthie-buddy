@@ -173,3 +173,23 @@
 - Replaced placeholder `doc/UI_GUIDELINES.md` content with concrete UI standards (layout, auth pages, spacing, typography).
 - Executed deliverable verification script for gradebook files.
 - Executed `npm run lint` and `npm run typecheck`: passed.
+- Added shared transcript aggregation service `lib/api/transcripts.ts`:
+  - Fetches student enrollments (`enrolled|completed`) with section/course metadata.
+  - Aggregates gradebook items and student score rows by section.
+  - Computes weighted course percentage (`sum(score)/sum(max_points)`), mapped letter grade, and grade points.
+  - Falls back to `grades` table values when gradebook-derived values are unavailable.
+  - Computes transcript summary metrics: `credits_attempted`, `credits_completed`, `gpa`.
+- Added `GET /api/transcripts/me` in `app/api/transcripts/me/route.ts`:
+  - Enforces student RBAC via `requireStudentContext`.
+  - Returns student-only transcript aggregate (`courses[]`, credit totals, `gpa`).
+- Added transcript UI components:
+  - `components/transcript/GpaSummaryCard.tsx`
+  - `components/transcript/TranscriptTable.tsx`
+- Added student transcript pages:
+  - `app/(dashboard)/student/transcript/page.tsx` (source page implementation)
+  - `app/dashboard/student/transcript/page.tsx` (route re-export)
+- Rebuilt student dashboard pages:
+  - `app/(dashboard)/student/page.tsx` now renders GPA summary, enrolled courses, upcoming schedule, and quick links.
+  - `app/dashboard/student/page.tsx` now re-exports from grouped source page.
+- Executed deliverable verification script for transcript/dashboard files.
+- Executed `npm run lint`, `npm run typecheck`, and `npm test`: passed.

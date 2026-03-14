@@ -41,8 +41,8 @@ Legend: `[ ]` todo, `[~]` in-progress, `[x]` done, `[!]` blocked
 - [x] (2026-03-14 10:37 IST) Write migration + RLS policies for grades/transcript visibility.
 - [x] (2026-03-14 12:53 IST) Introduce gradebook schema (`gradebook_items`, `gradebook_scores`) with RLS policies.
 - [x] (2026-03-14 14:08 IST) Faculty gradebook entry and submission workflow.
-- [ ] Student transcript view with GPA calculation.
-- [ ] Build lightweight student dashboard (enrolled courses + GPA snapshot).
+- [x] (2026-03-14 14:25 IST) Student transcript view with GPA calculation.
+- [x] (2026-03-14 14:25 IST) Build lightweight student dashboard (enrolled courses + GPA snapshot).
 - [ ] Build lightweight faculty dashboard (assigned sections + grading queue).
 - [ ] Implement endpoint groups for `/grades`, `/transcripts`, plus role-scoped `/students` and `/faculty`.
 - [ ] Add unit tests for grade submission and GPA calculation.

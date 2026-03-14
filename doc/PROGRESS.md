@@ -101,3 +101,15 @@ Format: `[YYYY-MM-DD HH:MM] <agent> — <what was done>`
     + doc/UI_GUIDELINES.md
   Checks passed: deliverables verified ✓  npm run lint ✓  npm run typecheck ✓
   Next handoff to: $agent-browser — validate faculty gradebook create-item and score-submission flows end-to-end
+- [2026-03-14 14:25] $api-endpoint + $frontend-design — Implemented student transcript API/UI and rebuilt student dashboard with GPA widgets and quick links.
+  Output files:
+    + app/api/transcripts/me/route.ts
+    + lib/api/transcripts.ts
+    + components/transcript/GpaSummaryCard.tsx
+    + components/transcript/TranscriptTable.tsx
+    + app/(dashboard)/student/transcript/page.tsx
+    + app/dashboard/student/transcript/page.tsx
+    + app/(dashboard)/student/page.tsx
+    + app/dashboard/student/page.tsx
+  Checks passed: deliverables verified ✓  npm run lint ✓  npm run typecheck ✓  npm test ✓
+  Next handoff to: $agent-browser — validate student transcript and dashboard flows in browser
