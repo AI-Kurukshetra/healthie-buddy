@@ -203,6 +203,7 @@ export async function GET(_: Request, { params }: { params: Promise<{ sectionId:
     const parsed = SectionGradebookResponseSchema.safeParse(payload);
 
     if (!parsed.success) {
+      console.error("GET /api/sections/[sectionId]/gradebook invalid faculty response", parsed.error.issues);
       return errorResponse(500, "invalid_response", "Faculty gradebook response validation failed.");
     }
 
@@ -280,6 +281,7 @@ export async function GET(_: Request, { params }: { params: Promise<{ sectionId:
     const parsed = SectionGradebookResponseSchema.safeParse(payload);
 
     if (!parsed.success) {
+      console.error("GET /api/sections/[sectionId]/gradebook invalid student response", parsed.error.issues);
       return errorResponse(500, "invalid_response", "Student gradebook response validation failed.");
     }
 

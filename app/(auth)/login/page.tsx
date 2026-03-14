@@ -10,7 +10,6 @@ import { AppLink } from "@/components/ui/app-link";
 import { FormSubmitButton } from "@/components/ui/form-submit-button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { Select } from "@/components/ui/select";
 
 const LOGIN_ERROR_MESSAGE: Record<string, string> = {
   invalid_input: "Please enter your email and password.",
@@ -38,7 +37,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
           <p className="text-xs font-semibold uppercase tracking-[0.24em] text-teal-700">Campus Management</p>
           <CardTitle>Login</CardTitle>
           <CardDescription>
-            Sign in with your student, faculty, or admin account.
+            Sign in with your campus account. Your role is resolved automatically after authentication.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -64,16 +63,6 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
               <Label htmlFor="password">Password</Label>
               <Input id="password" name="password" type="password" required />
             </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="role">Role</Label>
-              <Select id="role" name="role" defaultValue="student">
-                <option value="student">Student</option>
-                <option value="faculty">Faculty</option>
-                <option value="admin">Admin</option>
-              </Select>
-            </div>
-
             <FormSubmitButton className="w-full" pendingLabel="Signing In...">
               Sign In
             </FormSubmitButton>

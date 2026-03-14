@@ -120,3 +120,15 @@ Format:
 - [2026-03-14] Decision: Centralize loading and navigation feedback with shared client primitives instead of page-specific spinners.
   Rationale: Auth submits, shell navigation, and gradebook mutations all needed visible progress, and ad hoc indicators would drift quickly across routes.
   Impact: Added shared skeleton/spinner/loading components, a global navigation-progress provider, a toast provider, and reusable form-pending buttons; auth and dashboard pages now reuse the same feedback system.
+
+- [2026-03-14] Decision: Remove role selection from the login form and keep it only on registration.
+  Rationale: Authentication is email/password-based, and the app already resolves the user's role from the persisted profile after sign-in; asking for role on login adds noise without affecting behavior.
+  Impact: `app/(auth)/login/page.tsx` no longer renders a role dropdown, while registration continues to collect role for profile provisioning.
+
+- [2026-03-14] Decision: Treat Supabase response-contract validation as a normalization boundary for Postgres `numeric` and `timestamptz` fields.
+  Rationale: Supabase commonly serializes `numeric` columns as strings and timestamp columns with timezone offsets like `+00:00`, while strict Zod `number()` and `datetime()` validation rejects those otherwise valid API payloads.
+  Impact: `lib/validations/api-contracts.ts` now coerces numeric response fields and accepts offset timestamps, preventing false `invalid_response` failures on faculty gradebook and similar endpoints.
+
+- [2026-03-14] Decision: Use a UI-first demo flow and treat enrollment as an API-assisted fallback until the catalog exposes an enroll action.
+  Rationale: Enrollment business rules are implemented server-side, but the current course catalog remains read-only in the UI; the demo should stay accurate without overstating available interactions.
+  Impact: `doc/DEMO.md` positions student browsing, transcript visibility, and faculty grading as the primary live demo path, with optional console-based enrollment only when needed.

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import * as React from "react";
-import { usePathname, useSearchParams } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { useNavigationProgress } from "@/components/layout/navigation-progress";
 
 type AppLinkProps = React.ComponentPropsWithoutRef<typeof Link>;
@@ -22,7 +22,6 @@ function getHrefValue(href: AppLinkProps["href"]) {
 export const AppLink = React.forwardRef<HTMLAnchorElement, AppLinkProps>(
   ({ href, onClick, target, ...props }, ref) => {
     const pathname = usePathname();
-    const searchParams = useSearchParams();
     const { startNavigation } = useNavigationProgress();
 
     return (
@@ -37,11 +36,9 @@ export const AppLink = React.forwardRef<HTMLAnchorElement, AppLinkProps>(
             return;
           }
 
-          const currentQuery = searchParams.toString();
-          const currentPath = currentQuery ? `${pathname}?${currentQuery}` : pathname;
           const nextPath = getHrefValue(href);
 
-          if (!nextPath || nextPath === "#" || nextPath === pathname || nextPath === currentPath) {
+          if (!nextPath || nextPath === "#" || nextPath === pathname) {
             return;
           }
 

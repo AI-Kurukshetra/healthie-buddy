@@ -1,6 +1,13 @@
 # Changelog
 
 ## 2026-03-14
+- Added `doc/DEMO.md` with a full hackathon demo walkthrough, seeded account mapping, role-based talking points, and an API-assisted enrollment fallback path.
+- Fixed gradebook response validation to accept Supabase `numeric` values serialized as strings and `timestamptz` values with timezone offsets.
+- Added server-side logging for invalid gradebook response payloads in `app/api/sections/[sectionId]/gradebook/route.ts`.
+- Added `tests/unit/apiContracts.test.ts` to cover gradebook and enrollment response contracts with Supabase-style numeric/timestamp values.
+- Removed the unused role selector from `app/(auth)/login/page.tsx`.
+- Updated the login subtitle to clarify that role is determined after authentication.
+- Updated `doc/UI_GUIDELINES.md` so role selection is required only on registration, not login.
 - Added `doc/` folder with required project context files.
 - Added initial `doc/PRD.md` based on `requirements.pdf`.
 - Added initial `doc/TASKS.md` with prioritized MVP backlog.
