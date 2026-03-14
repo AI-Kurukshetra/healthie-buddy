@@ -84,6 +84,25 @@
 - `quality_points numeric(6,2)`
 - `created_at`, `updated_at`
 
+### `gradebook_items`
+- `id uuid` PK
+- `section_id uuid` FK -> `sections.id`
+- `title text`
+- `description text` (nullable)
+- `max_points numeric(6,2)` with positive check
+- `due_at timestamptz` (nullable)
+- `created_at`, `updated_at`
+
+### `gradebook_scores`
+- `id uuid` PK
+- `item_id uuid` FK -> `gradebook_items.id`
+- `student_id uuid` FK -> `students.id`
+- `score numeric(6,2)` with non-negative check
+- `feedback text` (nullable)
+- `graded_at timestamptz`
+- Unique: `(item_id, student_id)`
+- `created_at`, `updated_at`
+
 ## Migration History
 - `20260314103657_init_hackathon_core_schema.sql`
   - Created tables: `roles`, `users`, `students`, `faculty`, `courses`, `sections`, `enrollments`, `grades`, `transcripts`
@@ -93,10 +112,16 @@
 - `20260314103930_seed_roles_and_auth_insert_policies.sql`
   - Seeded role rows: `student`, `faculty`, `admin`
   - Added insert policies for self-registration profile creation on `users`, `students`, `faculty`
+- `20260314125345_add_gradebook_tables.sql`
+  - Created tables: `gradebook_items`, `gradebook_scores`
+  - Added FK links: `gradebook_items.section_id -> sections.id`, `gradebook_scores.item_id -> gradebook_items.id`, `gradebook_scores.student_id -> students.id`
+  - Added unique constraint: `gradebook_scores(item_id, student_id)`
+  - Added `updated_at` triggers and indexes for gradebook lookup paths
+  - Enabled RLS and added faculty write / student own-score read policies
 
 ## RLS Policy Log
 - RLS enabled on all core tables:
-  - `roles`, `users`, `students`, `faculty`, `courses`, `sections`, `enrollments`, `grades`, `transcripts`
+  - `roles`, `users`, `students`, `faculty`, `courses`, `sections`, `enrollments`, `grades`, `transcripts`, `gradebook_items`, `gradebook_scores`
 - Key policies:
   - `roles`: authenticated users can read roles
   - `users`: users can select/update/insert only their own record
@@ -105,3 +130,5 @@
   - `enrollments`: students can manage their own enrollments; faculty can read enrollments for their sections
   - `grades`: faculty can read/write grades for sections they teach; students can read their own grades
   - `transcripts`: students can read own transcripts; faculty can read transcript rows tied to their taught sections
+  - `gradebook_items`: authenticated read; faculty can insert/update/delete items for their own sections
+  - `gradebook_scores`: faculty can insert/update/delete/read scores for their own sections; students can read only their own scores
