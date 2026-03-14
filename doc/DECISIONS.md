@@ -112,3 +112,7 @@ Format:
 - [2026-03-14] Decision: Validate app-facing database IDs against Postgres UUID format instead of RFC-only UUID rules.
   Rationale: The demo seed uses deterministic UUID literals that Postgres accepts but Zod's RFC-oriented `.uuid()` validator rejects, which blocked gradebook and other API routes before the database query ran.
   Impact: Shared validation now accepts both seeded deterministic IDs and standard RFC UUIDs, preventing false `invalid_input` errors on seeded demo data.
+
+- [2026-03-14] Decision: Normalize in-scope API responses to documented camelCase contracts and validate them at route boundaries.
+  Rationale: Raw Supabase row shapes were inconsistent across endpoints and left some routes without response-level contract enforcement, which weakens architecture consistency and makes external evaluation harder.
+  Impact: Added `lib/validations/api-contracts.ts`, validated catalog/enrollment/gradebook responses, normalized enrollment and gradebook score payloads, and aligned `README.md` plus `doc/API.md` with the emitted JSON shapes.
