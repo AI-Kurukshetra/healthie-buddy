@@ -137,3 +137,9 @@ Format: `[YYYY-MM-DD HH:MM] <agent> — <what was done>`
     + tests/unit/gradeSubmission.test.ts
   Checks passed: npm test ✓
   Next handoff to: $agent-browser — optional API/UI smoke of grade entry + transcript consistency
+- [2026-03-14 15:06] $db-migration — Added idempotent demo seed migration for roles, users/auth, profiles, courses, sections, enrollments, gradebook, grades, and transcripts.
+  Output files:
+    + supabase/migrations/20260314150500_seed_demo_data.sql
+    + doc/SCHEMA.md
+  Checks passed: deliverables verified ✓
+  Next handoff to: $agent-browser — validate seeded demo accounts and full grading/transcript journey in UI

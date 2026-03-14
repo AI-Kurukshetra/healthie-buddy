@@ -118,6 +118,18 @@
   - Added unique constraint: `gradebook_scores(item_id, student_id)`
   - Added `updated_at` triggers and indexes for gradebook lookup paths
   - Enabled RLS and added faculty write / student own-score read policies
+- `20260314150500_seed_demo_data.sql`
+  - Seeded deterministic demo records across all core tables and `auth.users` using idempotent insert/upsert patterns.
+  - Dataset targets:
+    - Roles: `student`, `faculty`, `admin`
+    - Users: `30` students, `8` faculty, `1` admin
+    - Courses: `10`
+    - Sections: `10`
+    - Enrollments: deterministic `3-4` sections per seeded student
+    - Gradebook: `4` items per seeded section
+    - Scores: realistic 60–100% scoring bands
+    - Grades and transcripts: derived from score aggregates and course credits
+  - Maintains FK/unique constraints and avoids truncation for repeatable demo resets.
 
 ## RLS Policy Log
 - RLS enabled on all core tables:

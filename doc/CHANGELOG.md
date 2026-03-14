@@ -227,3 +227,14 @@
   - Validates invalid score handling (negative score rejected) for single and batch schemas
   - Validates `POST /api/gradebook/scores` malformed payload path returns `400 invalid_input`
 - Executed `npm test`: passed (`5` files, `16` tests).
+- Added migration `supabase/migrations/20260314150500_seed_demo_data.sql` to seed full demo dataset idempotently across all schema tables:
+  - `roles` (`student`, `faculty`, `admin`)
+  - `users` + `auth.users` demo identities (`30` students, `8` faculty, `1` admin)
+  - `students` and `faculty` profiles with realistic Indian names, programs, departments, and institutional IDs
+  - `courses` (`10`) and `sections` (`10`) with realistic schedules
+  - `enrollments` with deterministic 3–4 section assignments per student
+  - `gradebook_items` (4 per section: Assignment 1, Assignment 2, Midterm, Final)
+  - `gradebook_scores` with realistic score generation (60–100% bands)
+  - `grades` derived from computed section averages
+  - `transcripts` with GPA-credit fields based on course credits and grade points
+- Seed migration is deterministic/idempotent via conflict-safe inserts (`ON CONFLICT`) and preserves FK/unique constraints without truncation.
