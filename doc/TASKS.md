@@ -45,7 +45,7 @@ Legend: `[ ]` todo, `[~]` in-progress, `[x]` done, `[!]` blocked
 - [x] (2026-03-14 14:25 IST) Build lightweight student dashboard (enrolled courses + GPA snapshot).
 - [x] (2026-03-14 14:35 IST) Build lightweight faculty dashboard (assigned sections + grading queue).
 - [x] (2026-03-14 14:50 IST) Implement endpoint groups for `/grades`, `/transcripts`, plus role-scoped `/students` and `/faculty`.
-- [ ] Add unit tests for grade submission and GPA calculation.
+- [x] (2026-03-14 14:54 IST) Add unit tests for grade submission and GPA calculation.
 - [ ] Add E2E tests for the 5 core journeys (register/login, browse, enroll conflict, grade submit, transcript/GPA).
 
 ## 3. Cross-Milestone Quality & Release

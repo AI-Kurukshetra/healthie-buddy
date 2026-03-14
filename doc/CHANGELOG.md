@@ -219,3 +219,11 @@
   - Normalized dashboard-oriented payload structures for student/faculty summaries and grade records
 - Executed deliverable verification script for new endpoint files.
 - Executed `npm run lint`, `npm run typecheck`, and `npm test`: passed.
+- Added GPA unit test suite `tests/unit/gpa.test.ts`:
+  - Validates gradebook score aggregation into weighted course percentage
+  - Validates GPA and credit totals from completed vs enrolled sections
+  - Validates fallback to `grades` table when gradebook scores are absent
+- Added grade submission unit test suite `tests/unit/gradeSubmission.test.ts`:
+  - Validates invalid score handling (negative score rejected) for single and batch schemas
+  - Validates `POST /api/gradebook/scores` malformed payload path returns `400 invalid_input`
+- Executed `npm test`: passed (`5` files, `16` tests).

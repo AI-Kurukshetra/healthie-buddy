@@ -131,3 +131,9 @@ Format: `[YYYY-MM-DD HH:MM] <agent> — <what was done>`
     + lib/validations/dashboard-api.ts
   Checks passed: deliverables verified ✓  npm run lint ✓  npm run typecheck ✓  npm test ✓
   Next handoff to: $agent-browser — validate role-based API behavior for student and faculty dashboards
+- [2026-03-14 14:54] codex — Added unit tests for GPA calculation and grade submission validation paths.
+  Output files:
+    + tests/unit/gpa.test.ts
+    + tests/unit/gradeSubmission.test.ts
+  Checks passed: npm test ✓
+  Next handoff to: $agent-browser — optional API/UI smoke of grade entry + transcript consistency
