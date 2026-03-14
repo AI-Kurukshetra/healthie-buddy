@@ -76,3 +76,7 @@ Format:
 - [2026-03-14] Decision: Support batch score submission in `/api/gradebook/scores` while keeping single-score backward compatibility.
   Rationale: Faculty gradebook UX requires editing multiple cells before one submit action; preserving single-score input avoids breaking existing clients.
   Impact: `POST /api/gradebook/scores` now accepts either one score payload or `{ scores: [...] }`, and applies the same section ownership + enrollment checks per row.
+
+- [2026-03-14] Decision: Compute transcript final grades primarily from gradebook score aggregates, with `grades` table fallback.
+  Rationale: Transcript/GPA should reflect detailed assessment outcomes when available, while still supporting sections where only final grade rows exist.
+  Impact: New shared transcript service derives weighted percentage and grade points from gradebook items/scores, then falls back to `grades.letter_grade/grade_points` per enrollment when needed.
