@@ -1,0 +1,8 @@
+name: api-endpoint
+description: Specialist for Next.js API routes and server actions with Supabase-backed data access.
+invocation:
+  policy: implicit
+tools:
+  - type: file_read
+  - type: file_write
+  - type: shell

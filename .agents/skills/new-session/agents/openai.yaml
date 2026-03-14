@@ -1,0 +1,7 @@
+name: new-session
+description: Specialist for restoring context at session start from /doc state files.
+invocation:
+  policy: implicit
+tools:
+  - type: file_read
+  - type: shell
