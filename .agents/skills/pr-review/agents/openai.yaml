@@ -1,0 +1,7 @@
+name: pr-review
+description: Specialist for pre-merge code review with emphasis on bugs, risks, and regressions.
+invocation:
+  policy: explicit
+tools:
+  - type: file_read
+  - type: shell

@@ -1,0 +1,67 @@
+# Changelog
+
+## 2026-03-14
+- Added `doc/` folder with required project context files.
+- Added initial `doc/PRD.md` based on `requirements.pdf`.
+- Added initial `doc/TASKS.md` with prioritized MVP backlog.
+- Updated `doc/PRD.md` to confirm community college as MVP pilot and added rationale/assumption updates.
+- Logged pilot-type decision in `doc/DECISIONS.md`.
+- Marked Product Foundation pilot-selection task complete in `doc/TASKS.md`.
+- Refined `doc/PRD.md` to a hackathon prototype MVP with 5 scoped flows only.
+- Reworked `doc/TASKS.md` backlog to align strictly with the 5-flow prototype delivery.
+- Reorganized `doc/TASKS.md` into 3 explicit hackathon milestones: M1 (Authentication + role model), M2 (Enrollment system), M3 (Academic records + dashboards).
+- Initialized project scaffold in repo root with Next.js 15 (App Router + Turbopack), TypeScript strict, npm lockfile, and Tailwind CSS v3 setup.
+- Added Supabase SSR auth scaffolding: `lib/supabase/client.ts`, `lib/supabase/server.ts`, `lib/supabase/middleware.ts`, and root `middleware.ts`.
+- Added foundational project files: `tailwind.config.ts`, `lib/utils.ts`, `types/env.d.ts`, and `.env.example`.
+- Updated `doc/TASKS.md` to mark initial M1 setup tasks completed.
+- Added migration `supabase/migrations/20260314103657_init_hackathon_core_schema.sql` with core tables:
+  - `roles`, `users`, `students`, `faculty`, `courses`, `sections`, `enrollments`, `grades`, `transcripts`
+  - Enrollment conflict-check trigger and `updated_at` trigger utility
+  - RLS enabled on all core tables with baseline student/faculty policies
+- Updated `doc/SCHEMA.md` with full table definitions, migration history, and RLS policy log.
+- Added migration `supabase/migrations/20260314103930_seed_roles_and_auth_insert_policies.sql`:
+  - Seeded roles: `student`, `faculty`, `admin`
+  - Added self-service insert policies for `users`, `students`, and `faculty`
+- Implemented Supabase auth endpoints/actions:
+  - `app/(auth)/actions.ts` for register, login, logout
+  - `app/(auth)/login/page.tsx` and `app/(auth)/register/page.tsx`
+- Implemented RBAC route and action guards:
+  - Route-level guard in `middleware.ts` for `/dashboard/student|faculty|admin`
+  - Server-side guard utilities in `lib/auth/server.ts`
+  - Role types in `lib/auth/types.ts`
+  - Action-level guard examples in `app/(dashboard)/actions.ts`
+- Added protected dashboard route structure and forbidden page:
+  - `app/(dashboard)/layout.tsx`, `app/(dashboard)/page.tsx`
+  - `app/(dashboard)/student/page.tsx`, `app/(dashboard)/faculty/page.tsx`, `app/(dashboard)/admin/page.tsx`
+  - `app/forbidden.tsx`
+- Created skill scaffolding under `.agents/skills/` for:
+  - `frontend-design`
+  - `db-migration`
+  - `api-endpoint`
+  - `agent-browser`
+  - `pr-review`
+  - `new-session`
+- Added required files for each skill:
+  - `SKILL.md` (YAML frontmatter + workflow instructions)
+  - `agents/openai.yaml` (metadata + invocation policy)
+- Marked M1 demo-user seed strategy task complete in `doc/TASKS.md`.
+- Added explicit seed strategy decision in `doc/DECISIONS.md`:
+  - Demo student/faculty identities are created via existing registration flow
+  - Future domain data seed SQL should be idempotent and map records by known demo emails/IDs
+- Updated `doc/PRD.md` with a seed strategy note for repeatable hackathon demo setup.
+- Implemented course catalog browsing in `app/(dashboard)/student/page.tsx`:
+  - Fetches section + course metadata in an authenticated server component
+  - Derives enrolled counts from `enrollments` to show `enrolled/capacity` and seats remaining
+  - Adds explicit empty and error states for catalog rendering
+- Marked M2 catalog task complete in `doc/TASKS.md`.
+- Logged catalog implementation and validation status in `doc/PROGRESS.md`.
+- Refactored auth page UI only (kept auth actions intact) for:
+  - `app/(auth)/login/page.tsx`
+  - `app/(auth)/register/page.tsx`
+- Added shadcn-style reusable auth primitives:
+  - `components/ui/card.tsx`
+  - `components/ui/input.tsx`
+  - `components/ui/label.tsx`
+  - `components/ui/select.tsx`
+  - `components/ui/button.tsx`
+- Updated `doc/PROGRESS.md` with a formal `$frontend-design` handoff record and deliverables.
